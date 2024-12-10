@@ -29,8 +29,4 @@ Route::get('/dashboard/admin', [AdminController::class, 'index']);
 Route::get('/dashboard/kasir', [KasirController::class, 'index']);
 Route::get('/dashboard/gudang', [GudangController::class, 'index']);
 
-Route::get('/suppliers', [SupplierController::class, 'index']);
-Route::get('/suppliers/{id}', [SupplierController::class, 'show']);
-Route::post('/suppliers', [SupplierController::class, 'store']);
-Route::put('/suppliers/{id}', [SupplierController::class, 'update']);
-Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy']);
+Route::apiResource('suppliers', SupplierController::class);

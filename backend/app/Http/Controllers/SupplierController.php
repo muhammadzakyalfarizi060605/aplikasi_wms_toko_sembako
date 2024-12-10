@@ -7,14 +7,11 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    // Menampilkan semua data supplier
     public function index()
     {
-        $suppliers = SupplierModel::all();
-        return response()->json($suppliers); // Mengembalikan data dalam format JSON
+        return SupplierModel::all();
     }
 
-    // Menyimpan data supplier baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -24,50 +21,35 @@ class SupplierController extends Controller
             'alamat' => 'required|string',
         ]);
 
-        $supplier = SupplierModel::create($validated);
-        return response()->json($supplier, 201); // Mengembalikan data supplier yang baru dibuat
+        return SupplierModel::create($validated);
     }
 
-    // Menampilkan data supplier berdasarkan ID
     public function show($id)
     {
-        $supplier = SupplierModel::find($id);
-        if ($supplier) {
-            return response()->json($supplier);
-        }
-        return response()->json(['message' => 'Supplier not found'], 404);
+        return SupplierModel::findOrFail($id);
     }
 
-    // Mengupdate data supplier
     public function update(Request $request, $id)
     {
+        $supplier = SupplierModel::findOrFail($id);
+
         $validated = $request->validate([
-            'nama_supplier' => 'required|string|max:255',
-            'email' => 'required|email',
-            'no_telp' => 'required|string|max:15',
-            'alamat' => 'required|string',
+            'nama_supplier' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:suppliers,email,' . $id,
+            'no_telp' => 'sometimes|required|string|max:15',
+            'alamat' => 'sometimes|required|string',
         ]);
 
-        $supplier = SupplierModel::find($id);
+        $supplier->update($validated);
 
-        if ($supplier) {
-            $supplier->update($validated);
-            return response()->json($supplier); // Mengembalikan data supplier yang telah diperbarui
-        }
-
-        return response()->json(['message' => 'Supplier not found'], 404);
+        return $supplier;
     }
 
-    // Menghapus data supplier
     public function destroy($id)
     {
-        $supplier = SupplierModel::find($id);
+        $supplier = SupplierModel::findOrFail($id);
+        $supplier->delete();
 
-        if ($supplier) {
-            $supplier->delete();
-            return response()->json(['message' => 'Supplier deleted successfully']);
-        }
-
-        return response()->json(['message' => 'Supplier not found'], 404);
+        return response()->json(['message' => 'Supplier deleted successfully']);
     }
 }

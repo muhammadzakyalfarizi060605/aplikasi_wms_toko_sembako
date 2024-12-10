@@ -2,31 +2,46 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../layouts/Sidebar";
 import Navbar from "../layouts/Navbar";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../index.css";
 
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // useNavigate for navigation in React Router v6
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  const [suppliers, setSuppliers] = useState([]);
-
   useEffect(() => {
-    // Mengambil data dari API
-    const fetchSuppliers = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/suppliers");
-        setSuppliers(response.data);
-      } catch (error) {
-        console.error("Error fetching suppliers:", error);
-      }
-    };
-
     fetchSuppliers();
   }, []);
+
+  const fetchSuppliers = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/suppliers");
+      setSuppliers(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+      setLoading(false);
+    }
+  };
+
+  const deleteSupplier = async (id) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/suppliers/${id}`);
+      setSuppliers(suppliers.filter((supplier) => supplier.id_supplier !== id));
+    } catch (error) {
+      console.error("Error deleting supplier:", error);
+    }
+  };
+
+  const handleAddSupplier = () => {
+    navigate("/gudang/dashboard/supplier/add-supplier"); // Use navigate to go to the add-supplier page
+  };
 
   return (
     <div className="flex h-screen">
@@ -39,7 +54,7 @@ const Dashboard = () => {
         <Navbar toggleSidebar={toggleSidebar} />
 
         {/* Main Dashboard Content */}
-        <main className="flex-1 p-4 ">
+        <main className="flex-1 p-4">
           <div className="bg-white p-6 shadow-lg rounded-lg">
             <h1 className="text-2xl font-bold text-gray-800">
               Dashboard Supplier
@@ -49,49 +64,70 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {/* Wrapper untuk tabel dengan overflow-x-auto */}
-          <div className="container">
-            <h1>Supplier Dashboard</h1>
-            <Link to="/gudang/supplier/add" className="btn btn-primary">
-              Add New Supplier
-            </Link>
-            <table className="table mt-3">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Supplier Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Address</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {suppliers.map((supplier) => (
-                  <tr key={supplier.id_supplier}>
-                    <td>{supplier.id_supplier}</td>
-                    <td>{supplier.nama_supplier}</td>
-                    <td>{supplier.email}</td>
-                    <td>{supplier.no_telp}</td>
-                    <td>{supplier.alamat}</td>
-                    <td>
-                      <Link
-                        to={`/gudang/supplier/show/${supplier.id_supplier}`}
-                        className="btn btn-info"
-                      >
-                        Show
-                      </Link>
-                      <Link
-                        to={`/gudang/supplier/edit/${supplier.id_supplier}`}
-                        className="btn btn-warning"
-                      >
-                        Edit
-                      </Link>
-                    </td>
+          {/* Wrapper for the table with overflow-x-auto */}
+          <div className="container mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4">Data Supplier</h1>
+
+            {/* Add Supplier Button */}
+            <button
+              onClick={handleAddSupplier}
+              className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            >
+              Tambah Supplier
+            </button>
+
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <table className="table-auto w-full text-left border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2">Nama</th>
+                    <th className="border border-gray-300 px-4 py-2">Email</th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      No. Telp
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Alamat</th>
+                    <th className="border border-gray-300 px-4 py-2">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {suppliers.map((supplier) => (
+                    <tr key={supplier.id_supplier}>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {supplier.nama_supplier}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {supplier.email}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {supplier.no_telp}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {supplier.alamat}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <button
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={() =>
+                            alert(`Edit supplier ID: ${supplier.id_supplier}`)
+                          }
+                        >
+                          Edit
+                        </button>
+                        <span className="mx-2">|</span>
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => deleteSupplier(supplier.id_supplier)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </main>
       </div>

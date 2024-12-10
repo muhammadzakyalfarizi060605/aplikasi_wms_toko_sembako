@@ -1,87 +1,102 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const AddSupplier = () => {
-  const [namaSupplier, setNamaSupplier] = useState("");
-  const [email, setEmail] = useState("");
-  const [noTelp, setNoTelp] = useState("");
-  const [alamat, setAlamat] = useState("");
-  const navigate = useNavigate(); // Gunakan navigate sebagai nama variabel yang lebih umum
-  const [error, setError] = useState(null);
+  const [supplier, setSupplier] = useState({
+    nama_supplier: "",
+    email: "",
+    no_telp: "",
+    alamat: "",
+  });
+
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+
+  const handleChange = (e) => {
+    setSupplier({ ...supplier, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const newSupplier = {
-      nama_supplier: namaSupplier,
-      email: email,
-      no_telp: noTelp,
-      alamat: alamat,
-    };
-
     try {
-      // Mengirim data ke backend
-      await axios.post("http://localhost:8000/suppliers", newSupplier);
-      navigate("/gudang/supplier/dashboard"); // Redirect setelah berhasil
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to add supplier.");
-      console.error("Error adding supplier:", err);
+      await axios.post("http://127.0.0.1:8000/api/suppliers", supplier);
+      alert("Supplier berhasil ditambahkan!");
+      navigate("/dashboard"); // Navigate back to the dashboard after successful submission
+    } catch (error) {
+      console.error("Error adding supplier:", error);
     }
   };
 
   return (
-    <div className="container">
-      <h1>Add New Supplier</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Tambah Supplier</h1>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Supplier Name</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Nama Supplier
+          </label>
           <input
             type="text"
-            className="form-control"
-            value={namaSupplier}
-            onChange={(e) => setNamaSupplier(e.target.value)}
+            name="nama_supplier"
+            value={supplier.nama_supplier}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div className="form-group">
-          <label>Email</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
           <input
             type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={supplier.email}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div className="form-group">
-          <label>Phone</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            No. Telp
+          </label>
           <input
             type="text"
-            className="form-control"
-            value={noTelp}
-            onChange={(e) => setNoTelp(e.target.value)}
+            name="no_telp"
+            value={supplier.no_telp}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div className="form-group">
-          <label>Address</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Alamat
+          </label>
           <textarea
-            className="form-control"
-            value={alamat}
-            onChange={(e) => setAlamat(e.target.value)}
+            name="alamat"
+            value={supplier.alamat}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <button type="submit" className="btn btn-success mt-3">
-          Add Supplier
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        >
+          Simpan Supplier
         </button>
       </form>
-      {error && (
-        <div className="alert alert-danger mt-3">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
+
+      {/* Back to Dashboard button */}
+      <button
+        onClick={() => navigate("/dashboard")} // Navigate to the dashboard
+        className="mt-4 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+      >
+        Kembali ke Dashboard
+      </button>
     </div>
   );
 };

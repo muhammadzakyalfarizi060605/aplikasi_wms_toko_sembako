@@ -43,6 +43,10 @@ const App = () => {
       <Routes>
         {/* Rute login */}
         <Route path="/" element={<LoginPage setUser={setUser} />} />
+        <Route
+          path="/gudang/dashboard/supplier/add-supplier"
+          element={<AddSupplier />}
+        />
 
         {/* Rute dengan autentikasi */}
         <Route
