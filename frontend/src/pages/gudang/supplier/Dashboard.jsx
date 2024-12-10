@@ -30,6 +30,11 @@ const Dashboard = () => {
     }
   };
 
+  const handleEditClick = (id) => {
+    // Navigasi ke halaman edit supplier dengan membawa id_supplier
+    navigate(`/edit-supplier/${id}`);
+  };
+
   const deleteSupplier = async (id) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/suppliers/${id}`);
@@ -109,16 +114,24 @@ const Dashboard = () => {
                       <td className="border border-gray-300 px-4 py-2">
                         <button
                           className="text-blue-500 hover:text-blue-700"
-                          onClick={() =>
-                            alert(`Edit supplier ID: ${supplier.id_supplier}`)
-                          }
+                          onClick={() => handleEditClick(supplier.id_supplier)}
                         >
                           Edit
                         </button>
                         <span className="mx-2">|</span>
                         <button
                           className="text-red-500 hover:text-red-700"
-                          onClick={() => deleteSupplier(supplier.id_supplier)}
+                          onClick={() => {
+                            // Menampilkan konfirmasi sebelum melanjutkan penghapusan
+                            const isConfirmed = window.confirm(
+                              "Apakah Anda yakin ingin menghapus supplier ini?"
+                            );
+
+                            // Jika user mengkonfirmasi (klik 'OK'), maka jalankan fungsi deleteSupplier
+                            if (isConfirmed) {
+                              deleteSupplier(supplier.id_supplier);
+                            }
+                          }}
                         >
                           Delete
                         </button>

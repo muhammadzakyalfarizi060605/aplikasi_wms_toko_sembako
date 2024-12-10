@@ -21,7 +21,7 @@ const AddSupplier = () => {
     try {
       await axios.post("http://127.0.0.1:8000/api/suppliers", supplier);
       alert("Supplier berhasil ditambahkan!");
-      navigate("/dashboard"); // Navigate back to the dashboard after successful submission
+      navigate("/gudang/supplier/dashboard"); // Navigate back to the dashboard after successful submission
     } catch (error) {
       console.error("Error adding supplier:", error);
     }
@@ -92,7 +92,7 @@ const AddSupplier = () => {
 
       {/* Back to Dashboard button */}
       <button
-        onClick={() => navigate("/dashboard")} // Navigate to the dashboard
+        onClick={() => navigate("/gudang/supplier/dashboard")} // Navigate to the dashboard
         className="mt-4 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
       >
         Kembali ke Dashboard

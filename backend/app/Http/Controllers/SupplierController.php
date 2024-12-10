@@ -31,19 +31,24 @@ class SupplierController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Temukan supplier berdasarkan id_supplier
         $supplier = SupplierModel::findOrFail($id);
 
+        // Validasi data yang diterima dari request
         $validated = $request->validate([
             'nama_supplier' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:suppliers,email,' . $id,
+            'email' => 'sometimes|required|email|unique:suppliers,email,' . $id . ',id_supplier', // Ganti id dengan id_supplier
             'no_telp' => 'sometimes|required|string|max:15',
             'alamat' => 'sometimes|required|string',
         ]);
 
+        // Update supplier hanya jika ada perubahan yang divalidasi
         $supplier->update($validated);
 
-        return $supplier;
+        // Kembalikan data supplier yang telah diperbarui
+        return response()->json($supplier);
     }
+
 
     public function destroy($id)
     {

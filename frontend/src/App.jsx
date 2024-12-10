@@ -11,6 +11,7 @@ import KasirDashboard from "./pages/kasir/KasirDashboard";
 import GudangDashboard from "./pages/gudang/GudangDashboard";
 import SupplierDashboard from "./pages/gudang/supplier/Dashboard";
 import AddSupplier from "./pages/gudang/supplier/AddSupplier";
+import EditSupplier from "./pages/gudang/supplier/EditSupplier";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -47,6 +48,7 @@ const App = () => {
           path="/gudang/dashboard/supplier/add-supplier"
           element={<AddSupplier />}
         />
+        <Route path="/edit-supplier/:id" element={<EditSupplier />} />
 
         {/* Rute dengan autentikasi */}
         <Route
