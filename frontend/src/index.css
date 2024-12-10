@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pastikan html dan body mengisi seluruh layar */
+html, body {
+    height: 100%; /* Pastikan body mengambil 100% tinggi layar */
+    margin: 0; /* Menghapus margin default */
+    padding: 0; /* Menghapus padding default */
+  }
+  
+  #root {
+    height: 100%; /* Pastikan root container juga mengisi 100% layar */
+  }
+  
