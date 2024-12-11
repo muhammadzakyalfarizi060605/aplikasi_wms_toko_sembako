@@ -87,7 +87,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                 </li>
                 <li>
                   <Link
-                    to="/barang/kategori-barang"
+                    to="/gudang/kategori-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (

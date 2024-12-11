@@ -17,6 +17,10 @@ import RakSupplier from "./pages/gudang/rak/Dashboard";
 import AddRak from "./pages/gudang/rak/AddRak";
 import ShowRak from "./pages/gudang/rak/ShowPage";
 import EditRak from "./pages/gudang/rak/EditPage";
+import KategoriBarangDashboard from "./pages/gudang/barang/KategoriBarang/Dashboard";
+import KategoriBarangEdit from "./pages/gudang/barang/KategoriBarang/KategoriBarangEdit";
+import KategoriBarangAdd from "./pages/gudang/barang/KategoriBarang/KategoriBarangAdd";
+import KategoriBarangShow from "./pages/gudang/barang/KategoriBarang/ShowKategoriBarang";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -66,6 +70,22 @@ const App = () => {
         {/* Routing untuk halaman detail rak */}
         <Route path="/show-rak/:id_rak" element={<ShowRak />} />
         <Route path="/gudang/rak/edit-rak/:id_rak" element={<EditRak />} />
+        <Route
+          path="/gudang/kategori-barang/dashboard"
+          element={<KategoriBarangDashboard />}
+        />
+        <Route
+          path="/gudang/kategori-barang/edit/:id_kategori"
+          element={<KategoriBarangEdit />}
+        />
+        <Route
+          path="/gudang/kategori-barang/add"
+          element={<KategoriBarangAdd />}
+        />
+        <Route
+          path="/gudang/kategori-barang/show/:id"
+          element={<KategoriBarangShow />}
+        />
 
         {/* Rute yang memerlukan autentikasi */}
         <Route
