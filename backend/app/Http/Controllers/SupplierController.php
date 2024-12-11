@@ -26,9 +26,12 @@ class SupplierController extends Controller
 
     public function show($id)
     {
-        return SupplierModel::findOrFail($id);
+        $supplier = SupplierModel::find($id);
+        if (!$supplier) {
+            return response()->json(['message' => 'Supplier not found'], 404);
+        }
+        return response()->json($supplier);
     }
-
     public function update(Request $request, $id)
     {
         // Temukan supplier berdasarkan id_supplier

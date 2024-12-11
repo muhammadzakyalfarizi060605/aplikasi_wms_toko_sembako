@@ -4,29 +4,29 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\RakController;
 use App\Http\Controllers\SupplierController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
+// Login route
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/dashboard/admin', [AdminController::class, 'index']);
-Route::get('/dashboard/kasir', [KasirController::class, 'index']);
-Route::get('/dashboard/gudang', [GudangController::class, 'index']);
+// Middleware auth untuk semua rute di bawah ini
 
+Route::middleware(['auth'])->group(function () {
+    // Rute untuk admin (hanya bisa diakses oleh admin)
+    Route::get('/dashboard/admin', [AdminController::class, 'index'])->middleware('role:admin');
+
+    // Rute untuk kasir (hanya bisa diakses oleh kasir)
+    Route::get('/dashboard/kasir', [KasirController::class, 'index'])->middleware('role:kasir');
+
+    // Rute untuk gudang (hanya bisa diakses oleh gudang)
+    Route::get('/dashboard/gudang', [GudangController::class, 'index'])->middleware('role:gudang');
+});
+
+
+// Supplier dan Rak hanya bisa diakses oleh gudang dan kasir
 Route::apiResource('suppliers', SupplierController::class);
+
+
+Route::apiResource('rak', RakController::class);

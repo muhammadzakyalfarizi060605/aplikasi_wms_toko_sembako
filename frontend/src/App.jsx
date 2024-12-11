@@ -12,45 +12,62 @@ import GudangDashboard from "./pages/gudang/GudangDashboard";
 import SupplierDashboard from "./pages/gudang/supplier/Dashboard";
 import AddSupplier from "./pages/gudang/supplier/AddSupplier";
 import EditSupplier from "./pages/gudang/supplier/EditSupplier";
+import ShowSupplier from "./pages/gudang/supplier/ShowSupplier";
+import RakSupplier from "./pages/gudang/rak/Dashboard";
+import AddRak from "./pages/gudang/rak/AddRak";
+import ShowRak from "./pages/gudang/rak/ShowPage";
+import EditRak from "./pages/gudang/rak/EditPage";
 
 const App = () => {
   const [user, setUser] = useState(null);
 
+  // Fungsi untuk memuat user dari localStorage saat pertama kali aplikasi dimulai
   useEffect(() => {
-    // Periksa localStorage untuk data user
     const userData = localStorage.getItem("user");
     if (userData) {
-      setUser(JSON.parse(userData));
+      setUser(JSON.parse(userData)); // Jika ada data, set user ke state
     }
   }, []);
 
+  // Fungsi untuk login dan menyimpan data user ke localStorage
+  const handleLogin = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData)); // Simpan user ke localStorage
+    setUser(userData); // Set user ke state
+  };
+
+  // PrivateRoute untuk memastikan hanya user dengan role tertentu yang bisa mengakses halaman
   const PrivateRoute = ({ children, role }) => {
-    // Periksa `localStorage` jika state user kosong
-    const storedUser = user || JSON.parse(localStorage.getItem("user"));
-
-    if (!storedUser) {
-      return <Navigate to="/" />; // Redirect ke halaman login jika tidak ada user
+    if (!user) {
+      return <Navigate to="/" />; // Arahkan ke halaman login jika user belum ada
     }
 
-    if (storedUser.role !== role) {
-      return <Navigate to="/" />; // Redirect jika role tidak sesuai
+    if (user.role !== role) {
+      return <Navigate to="/" />; // Jika role tidak sesuai, arahkan ke login
     }
 
-    return children;
+    return children; // Jika user dan role sesuai, tampilkan komponen anak
   };
 
   return (
     <Router>
       <Routes>
         {/* Rute login */}
-        <Route path="/" element={<LoginPage setUser={setUser} />} />
+        <Route path="/" element={<LoginPage setUser={handleLogin} />} />
+
+        {/* Rute yang tidak memerlukan autentikasi */}
         <Route
           path="/gudang/dashboard/supplier/add-supplier"
           element={<AddSupplier />}
         />
         <Route path="/edit-supplier/:id" element={<EditSupplier />} />
+        <Route path="/show-supplier/:id" element={<ShowSupplier />} />
+        <Route path="/gudang/rak/dashboard" element={<RakSupplier />} />
+        <Route path="/gudang/rak/add-rak" element={<AddRak />} />
+        {/* Routing untuk halaman detail rak */}
+        <Route path="/show-rak/:id_rak" element={<ShowRak />} />
+        <Route path="/gudang/rak/edit-rak/:id_rak" element={<EditRak />} />
 
-        {/* Rute dengan autentikasi */}
+        {/* Rute yang memerlukan autentikasi */}
         <Route
           path="/admin/dashboard"
           element={
@@ -71,12 +88,11 @@ const App = () => {
           path="/gudang/dashboard"
           element={
             <PrivateRoute role="gudang">
-              <div>
-                <GudangDashboard />
-              </div>
+              <GudangDashboard />
             </PrivateRoute>
           }
         />
+
         {/* Supplier Dashboard Route */}
         <Route
           path="/gudang/supplier/dashboard"
@@ -86,6 +102,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/gudang/supplier/add"
           element={
@@ -94,8 +111,9 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
         {/* Redirect jika rute tidak valid */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
     </Router>
   );

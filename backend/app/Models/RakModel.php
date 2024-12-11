@@ -12,6 +12,8 @@ class RakModel extends Model
     // Menentukan nama tabel jika berbeda dengan nama model (secara default Laravel menggunakan bentuk jamak dari nama model, yaitu 'raks')
     protected $table = 'rak';
 
+    protected $primaryKey = 'id_rak';
+
     // Kolom yang boleh diisi (Mass Assignment)
     protected $fillable = [
         'kode_rak',

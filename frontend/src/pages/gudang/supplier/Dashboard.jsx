@@ -9,7 +9,8 @@ const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // useNavigate for navigation in React Router v6
+  const [error, setError] = useState(null); // Menambahkan state untuk error
+  const navigate = useNavigate(); // Menggunakan useNavigate untuk menggantikan history.push
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -26,13 +27,9 @@ const Dashboard = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching suppliers:", error);
+      setError("There was an error fetching the supplier data.");
       setLoading(false);
     }
-  };
-
-  const handleEditClick = (id) => {
-    // Navigasi ke halaman edit supplier dengan membawa id_supplier
-    navigate(`/edit-supplier/${id}`);
   };
 
   const deleteSupplier = async (id) => {
@@ -45,7 +42,15 @@ const Dashboard = () => {
   };
 
   const handleAddSupplier = () => {
-    navigate("/gudang/dashboard/supplier/add-supplier"); // Use navigate to go to the add-supplier page
+    navigate("/gudang/dashboard/supplier/add-supplier"); // Mengarahkan ke halaman tambah supplier
+  };
+
+  const handleEditSupplier = (id) => {
+    navigate(`/edit-supplier/${id}`); // Mengarahkan ke halaman edit supplier
+  };
+
+  const handleShowSupplier = (id) => {
+    navigate(`/show-supplier/${id}`); // Mengarahkan ke halaman detail supplier
   };
 
   return (
@@ -61,19 +66,16 @@ const Dashboard = () => {
         {/* Main Dashboard Content */}
         <main className="flex-1 p-4">
           <div className="bg-white p-6 shadow-lg rounded-lg">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Dashboard Supplier
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-800">Dashboard Rak</h1>
             <p className="text-gray-600">
               This is where your main content goes.
             </p>
           </div>
 
-          {/* Wrapper for the table with overflow-x-auto */}
           <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Data Supplier</h1>
 
-            {/* Add Supplier Button */}
+            {/* Tombol Tambah Supplier */}
             <button
               onClick={handleAddSupplier}
               className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -83,6 +85,10 @@ const Dashboard = () => {
 
             {loading ? (
               <p>Loading...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p> // Menampilkan pesan error jika ada masalah
+            ) : suppliers.length === 0 ? (
+              <p>No suppliers found.</p> // Menampilkan pesan jika tidak ada supplier
             ) : (
               <table className="table-auto w-full text-left border-collapse border border-gray-300">
                 <thead>
@@ -114,24 +120,25 @@ const Dashboard = () => {
                       <td className="border border-gray-300 px-4 py-2">
                         <button
                           className="text-blue-500 hover:text-blue-700"
-                          onClick={() => handleEditClick(supplier.id_supplier)}
+                          onClick={() =>
+                            handleEditSupplier(supplier.id_supplier)
+                          } // Menggunakan handleEditSupplier untuk edit
                         >
                           Edit
                         </button>
                         <span className="mx-2">|</span>
                         <button
+                          className="text-green-500 hover:text-green-700"
+                          onClick={() =>
+                            handleShowSupplier(supplier.id_supplier)
+                          } // Tombol Show
+                        >
+                          Show
+                        </button>
+                        <span className="mx-2">|</span>
+                        <button
                           className="text-red-500 hover:text-red-700"
-                          onClick={() => {
-                            // Menampilkan konfirmasi sebelum melanjutkan penghapusan
-                            const isConfirmed = window.confirm(
-                              "Apakah Anda yakin ingin menghapus supplier ini?"
-                            );
-
-                            // Jika user mengkonfirmasi (klik 'OK'), maka jalankan fungsi deleteSupplier
-                            if (isConfirmed) {
-                              deleteSupplier(supplier.id_supplier);
-                            }
-                          }}
+                          onClick={() => deleteSupplier(supplier.id_supplier)}
                         >
                           Delete
                         </button>

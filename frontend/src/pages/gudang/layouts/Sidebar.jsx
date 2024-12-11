@@ -56,7 +56,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
           {/* Rak Menu */}
           <li>
             <Link
-              to="/rak"
+              to="/gudang/rak/dashboard"
               className={`flex items-center font-extrabold ml-2 p-3 rounded-tl-xl rounded-bl-xl ${
                 clicked === 2
                   ? "bg-white text-black"
