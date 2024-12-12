@@ -20,4 +20,11 @@ class KategoriBarangModel extends Model
         'nama_kategori',
         'deskripsi',
     ];
+
+    // Relasi ke model Barang
+    public function barang()
+    {
+        return $this->hasMany(BarangModel::class, 'id_kategori', 'id_kategori');
+    }
+    public $timestamps = true;
 }

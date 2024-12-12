@@ -21,6 +21,9 @@ import KategoriBarangDashboard from "./pages/gudang/barang/KategoriBarang/Dashbo
 import KategoriBarangEdit from "./pages/gudang/barang/KategoriBarang/KategoriBarangEdit";
 import KategoriBarangAdd from "./pages/gudang/barang/KategoriBarang/KategoriBarangAdd";
 import KategoriBarangShow from "./pages/gudang/barang/KategoriBarang/ShowKategoriBarang";
+import JenisBarangDashboard from "./pages/gudang/barang/JenisBarang/Dashboard";
+import JenisBarangAdd from "./pages/gudang/barang/JenisBarang/TambahBarang";
+import JenisBarangEdit from "./pages/gudang/barang/JenisBarang/EditBarang";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -85,6 +88,18 @@ const App = () => {
         <Route
           path="/gudang/kategori-barang/show/:id"
           element={<KategoriBarangShow />}
+        />
+        <Route
+          path="/gudang/jenis-barang/dashboard"
+          element={<JenisBarangDashboard />}
+        />
+        <Route
+          path="/gudang/jenis-barang/tambah"
+          element={<JenisBarangAdd />}
+        />
+        <Route
+          path="/gudang/barang/edit/:id_barang"
+          element={<JenisBarangEdit />}
         />
 
         {/* Rute yang memerlukan autentikasi */}

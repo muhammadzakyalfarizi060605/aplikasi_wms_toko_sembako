@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KategoriBarangController;
@@ -29,7 +30,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Supplier dan Rak hanya bisa diakses oleh gudang dan kasir
 Route::apiResource('suppliers', SupplierController::class);
-
-
 Route::apiResource('rak', RakController::class);
 Route::apiResource('kategori-barang', KategoriBarangController::class);
+Route::apiResource('barang', BarangController::class);

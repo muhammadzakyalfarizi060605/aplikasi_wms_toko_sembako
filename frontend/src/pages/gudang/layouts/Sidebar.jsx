@@ -79,7 +79,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
               <ul className="ml-6 mt-2 space-y-2">
                 <li>
                   <Link
-                    to="/barang/jenis-barang"
+                    to="/gudang/jenis-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && <span className="ml-6">Jenis Barang</span>}
