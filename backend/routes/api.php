@@ -33,3 +33,4 @@ Route::apiResource('suppliers', SupplierController::class);
 Route::apiResource('rak', RakController::class);
 Route::apiResource('kategori-barang', KategoriBarangController::class);
 Route::apiResource('barang', BarangController::class);
+Route::patch('/barang/update/{id_barang}', [BarangController::class, 'update']);

@@ -19,7 +19,7 @@ class BarangModel extends Model
     protected $fillable = [
         'id_kategori',
         'nama_barang',
-        'gambar_barang',
+        'alamat_gambar',
         'jumlah_stok',
         'satuan',
         'harga_jual_persatuan',

@@ -3,124 +3,148 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const TambahBarang = () => {
-  const [formData, setFormData] = useState({
-    id_kategori: "",
-    nama_barang: "",
-    gambar_barang: null,
-    jumlah_stok: "",
-    satuan: "",
-    harga_jual_persatuan: "",
-  });
+  const [kategoriList, setKategoriList] = useState([]); // Untuk menyimpan data kategori
+  const [namaBarang, setNamaBarang] = useState("");
+  const [idKategori, setIdKategori] = useState("");
+  const [jumlahStok, setJumlahStok] = useState("");
+  const [satuan, setSatuan] = useState("");
+  const [hargaJual, setHargaJual] = useState("");
+  const [gambarBarang, setGambarBarang] = useState(null);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // Untuk navigasi
-
-  const [categories, setCategories] = useState([]);
-
+  // Fetch kategori data dari API
   useEffect(() => {
-    axios.get("http://localhost:8000/api/kategori-barang").then((response) => {
-      setCategories(response.data);
-    });
+    axios
+      .get("http://localhost:8000/api/kategori-barang")
+      .then((response) => {
+        setKategoriList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching kategori data:", error);
+      });
   }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, gambar_barang: e.target.files[0] });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
 
+    const formData = new FormData();
+    formData.append("nama_barang", namaBarang);
+    formData.append("id_kategori", idKategori);
+    formData.append("jumlah_stok", jumlahStok);
+    formData.append("satuan", satuan);
+    formData.append("harga_jual_persatuan", hargaJual);
+    formData.append("gambar_barang", gambarBarang);
+
+    // Kirim data ke API Laravel
     axios
-      .post("http://localhost:8000/api/barang", data)
-      .then(() => alert("Barang berhasil ditambahkan!"))
-      .catch((error) => console.error("Error adding barang:", error));
-    navigate("/gudang/jenis-barang/dashboard"); // Navigasi ke dashboard setelah berhasil menambahkan barang
+      .post("http://localhost:8000/api/barang", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        alert("Barang berhasil ditambahkan!");
+        navigate("/gudang/jenis-barang/dashboard"); // Redirect ke dashboard setelah sukses
+      })
+      .catch((error) => {
+        console.error("Error adding barang:", error);
+        alert("Gagal menambahkan barang. Silakan coba lagi.");
+      });
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Tambah Barang</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block">Kategori</label>
-          <select
-            name="id_kategori"
-            value={formData.id_kategori}
-            onChange={handleChange}
-            className="border px-2 py-1"
-          >
-            <option value="">Pilih Kategori</option>
-            {categories.map((cat) => (
-              <option key={cat.id_kategori} value={cat.id_kategori}>
-                {cat.nama_kategori}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block">Nama Barang</label>
-          <input
-            type="text"
-            name="nama_barang"
-            value={formData.nama_barang}
-            onChange={handleChange}
-            className="border px-2 py-1"
-          />
-        </div>
-        <div>
-          <label className="block">Gambar Barang</label>
-          <input
-            type="file"
-            name="gambar_barang"
-            onChange={handleFileChange}
-            className="border px-2 py-1"
-          />
-        </div>
-        <div>
-          <label className="block">Jumlah Stok</label>
-          <input
-            type="number"
-            name="jumlah_stok"
-            value={formData.jumlah_stok}
-            onChange={handleChange}
-            className="border px-2 py-1"
-          />
-        </div>
-        <div>
-          <label className="block">Satuan</label>
-          <input
-            type="text"
-            name="satuan"
-            value={formData.satuan}
-            onChange={handleChange}
-            className="border px-2 py-1"
-          />
-        </div>
-        <div>
-          <label className="block">Harga Jual Persatuan</label>
-          <input
-            type="number"
-            name="harga_jual_persatuan"
-            value={formData.harga_jual_persatuan}
-            onChange={handleChange}
-            className="border px-2 py-1"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Tambah
-        </button>
-      </form>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-lg w-full max-w-2xl">
+        <h1 className="text-2xl font-bold mb-6">Tambah Barang</h1>
+
+        <form onSubmit={handleSubmit}>
+          {/* Input Nama Barang */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Nama Barang</label>
+            <input
+              type="text"
+              className="w-full border px-4 py-2 rounded"
+              value={namaBarang}
+              onChange={(e) => setNamaBarang(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Dropdown Kategori */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Kategori Barang</label>
+            <select
+              className="w-full border px-4 py-2 rounded"
+              value={idKategori}
+              onChange={(e) => setIdKategori(e.target.value)}
+              required
+            >
+              <option value="">Pilih Kategori</option>
+              {kategoriList.map((kategori) => (
+                <option key={kategori.id_kategori} value={kategori.id_kategori}>
+                  {kategori.nama_kategori}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Input Jumlah Stok */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Jumlah Stok</label>
+            <input
+              type="number"
+              className="w-full border px-4 py-2 rounded"
+              value={jumlahStok}
+              onChange={(e) => setJumlahStok(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Input Satuan */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Satuan</label>
+            <input
+              type="text"
+              className="w-full border px-4 py-2 rounded"
+              value={satuan}
+              onChange={(e) => setSatuan(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Input Harga Jual */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Harga Jual</label>
+            <input
+              type="number"
+              className="w-full border px-4 py-2 rounded"
+              value={hargaJual}
+              onChange={(e) => setHargaJual(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Input Gambar */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Upload Gambar</label>
+            <input
+              type="file"
+              className="w-full border px-4 py-2 rounded"
+              onChange={(e) => setGambarBarang(e.target.files[0])}
+              required
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Tambah Barang
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

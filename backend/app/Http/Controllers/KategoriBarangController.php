@@ -10,7 +10,7 @@ class KategoriBarangController extends Controller
     // Menampilkan semua kategori
     public function index()
     {
-        $kategori = KategoriBarangModel::all(['id_kategori', 'nama_kategori']);
+        $kategori = KategoriBarangModel::all();
         return response()->json($kategori);
     }
 

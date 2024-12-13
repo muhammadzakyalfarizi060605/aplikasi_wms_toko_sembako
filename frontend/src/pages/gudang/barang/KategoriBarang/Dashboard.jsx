@@ -12,6 +12,7 @@ const Dashboard = () => {
     axios
       .get("http://localhost:8000/api/kategori-barang")
       .then((res) => {
+        console.log(res.data); // Log to inspect the data structure
         setKategori(res.data);
       })
       .catch((err) => console.error(err));

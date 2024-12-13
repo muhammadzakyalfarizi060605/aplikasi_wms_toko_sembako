@@ -13,7 +13,7 @@ class CreateBarangTable extends Migration
             $table->id('id_barang'); // Menggunakan bigIncrements untuk auto-increment id_barang
             $table->bigInteger('id_kategori')->unsigned(); // Kolom id_kategori, big integer
             $table->string('nama_barang');
-            $table->string('gambar_barang');
+            $table->string('alamat_gambar');
             $table->integer('jumlah_stok');
             $table->string('satuan');
             $table->decimal('harga_jual_persatuan', 10, 2); // Sesuaikan tipe data harga

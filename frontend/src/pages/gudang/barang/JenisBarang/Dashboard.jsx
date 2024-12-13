@@ -7,9 +7,14 @@ import Sidebar from "../../layouts/Sidebar";
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [barangs, setBarangs] = useState([]);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
+  // Fetch barang data
   useEffect(() => {
+    fetchBarang();
+  }, []);
+
+  const fetchBarang = () => {
     axios
       .get("http://localhost:8000/api/barang")
       .then((response) => {
@@ -18,31 +23,34 @@ const Dashboard = () => {
       .catch((error) => {
         console.error("There was an error fetching the data!", error);
       });
-  }, []);
+  };
 
   // Handle delete barang
-  const handleDelete = (id_barang) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
+  const confirmDelete = (barangId) => {
+    const deleteUrl = `http://localhost:8000/api/barang/${barangId}`;
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
       axios
-        .delete(`http://localhost:8000/api/barang/${id_barang}`)
-        .then(() => {
-          setBarangs((prevBarangs) =>
-            prevBarangs.filter((barang) => barang.id_barang !== id_barang)
-          );
-          alert("Barang berhasil dihapus!");
+        .delete(deleteUrl)
+        .then((response) => {
+          if (response.data.status === "success") {
+            alert("Data barang berhasil dihapus.");
+            setBarangs((prevBarangs) =>
+              prevBarangs.filter((barang) => barang.id_barang !== barangId)
+            ); // Update state tanpa refresh
+          } else {
+            alert("Gagal menghapus data: " + response.data.message);
+          }
         })
         .catch((error) => {
-          console.error("There was an error deleting the item!", error);
-          alert("Terjadi kesalahan saat menghapus barang.");
+          console.error("Error deleting data:", error);
+          alert("Terjadi kesalahan saat menghapus data.");
         });
-    } else {
-      alert("Penghapusan barang dibatalkan.");
     }
   };
 
-  // Function to navigate to edit page
+  // Navigate to edit page
   const handleEdit = (id_barang) => {
-    navigate(`/gudang/barang/edit/${id_barang}`); // Navigate to the edit page
+    navigate(`/gudang/barang/edit/${id_barang}`);
   };
 
   return (
@@ -55,12 +63,10 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
         <Navbar
           toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        {/* Main Content */}
         <main className="flex-1 p-4">
           <div className="bg-white p-6 shadow-lg rounded-lg mb-4">
             <h1 className="text-2xl font-bold text-gray-800">
@@ -102,7 +108,7 @@ const Dashboard = () => {
                     <tr key={barang.id_barang}>
                       <td className="border px-4 py-2">
                         <img
-                          src={`http://localhost:8000/storage/${barang.gambar_barang}`}
+                          src={`http://localhost:8000/storage/${barang.alamat_gambar}`}
                           alt={barang.nama_barang}
                           className="w-16 h-16 object-cover"
                         />
@@ -130,7 +136,7 @@ const Dashboard = () => {
                           Show
                         </Link>
                         <button
-                          onClick={() => handleDelete(barang.id_barang)}
+                          onClick={() => confirmDelete(barang.id_barang)}
                           className="bg-red-500 text-white px-2 py-1 ml-2 rounded"
                         >
                           Delete

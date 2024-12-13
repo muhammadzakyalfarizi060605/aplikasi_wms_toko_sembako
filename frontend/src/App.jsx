@@ -24,6 +24,7 @@ import KategoriBarangShow from "./pages/gudang/barang/KategoriBarang/ShowKategor
 import JenisBarangDashboard from "./pages/gudang/barang/JenisBarang/Dashboard";
 import JenisBarangAdd from "./pages/gudang/barang/JenisBarang/TambahBarang";
 import JenisBarangEdit from "./pages/gudang/barang/JenisBarang/EditBarang";
+import ShowBarang from "./pages/gudang/barang/JenisBarang/ShowBarang";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -101,6 +102,7 @@ const App = () => {
           path="/gudang/barang/edit/:id_barang"
           element={<JenisBarangEdit />}
         />
+        <Route path="/gudang/barang/show/:id_barang" element={<ShowBarang />} />
 
         {/* Rute yang memerlukan autentikasi */}
         <Route
