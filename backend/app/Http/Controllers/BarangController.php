@@ -75,7 +75,6 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'id_kategori' => 'required|exists:kategori_barang,id_kategori',
             'nama_barang' => 'required|string|max:255',
-            'gambar_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'jumlah_stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:100',
             'harga_jual_persatuan' => 'required|numeric|min:0',
@@ -99,26 +98,7 @@ class BarangController extends Controller
             ], 404);
         }
 
-        // Jika ada gambar baru yang diunggah
-        if ($request->hasFile('gambar_barang')) {
-            // Hapus gambar lama jika ada
-            if ($barang->alamat_gambar && Storage::disk('public')->exists($barang->alamat_gambar)) {
-                Storage::disk('public')->delete($barang->alamat_gambar);
-            }
-
-            // Upload file gambar baru
-            $file = $request->file('gambar_barang');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = "images/" . $fileName;
-
-            // Simpan file ke folder storage/app/public/images
-            Storage::disk('public')->put($filePath, file_get_contents($file));
-
-            // Perbarui path gambar
-            $barang->alamat_gambar = $filePath;
-        }
-
-        // Perbarui data barang
+        // Perbarui data barang tanpa mengubah gambar
         $barang->id_kategori = $request->id_kategori;
         $barang->nama_barang = $request->nama_barang;
         $barang->jumlah_stok = $request->jumlah_stok;
@@ -128,10 +108,11 @@ class BarangController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Barang berhasil diperbarui',
+            'message' => 'Barang berhasil diperbarui tanpa mengubah gambar',
             'data' => $barang,
         ], 200);
     }
+
 
 
 

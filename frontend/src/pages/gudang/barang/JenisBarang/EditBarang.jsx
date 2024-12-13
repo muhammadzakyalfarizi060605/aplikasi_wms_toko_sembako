@@ -11,7 +11,6 @@ const EditBarangForm = () => {
     jumlah_stok: "",
     satuan: "",
     harga_jual_persatuan: "",
-    alamat_gambar: "",
   });
   const [kategori, setKategori] = useState([]); // Menyimpan daftar kategori
   const [loading, setLoading] = useState(true);
@@ -187,24 +186,6 @@ const EditBarangForm = () => {
             onChange={handleInputChange}
             className="border rounded w-full py-2 px-3"
             required
-          />
-        </div>
-
-        {/* Gambar Barang */}
-        <div className="mb-4">
-          <label
-            htmlFor="alamat_gambar"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Alamat Gambar
-          </label>
-          <input
-            type="text"
-            id="alamat_gambar"
-            name="alamat_gambar"
-            value={barang.alamat_gambar}
-            onChange={handleInputChange}
-            className="border rounded w-full py-2 px-3"
           />
         </div>
 
