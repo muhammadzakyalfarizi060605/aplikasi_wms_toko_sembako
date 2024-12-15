@@ -3,11 +3,14 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DetailTransaksiBarangController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KategoriBarangController;
 use App\Http\Controllers\RakController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransaksiBarangController;
+use App\Http\Controllers\UserController;
 use App\Models\KategoriBarangModel;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +36,6 @@ Route::apiResource('suppliers', SupplierController::class);
 Route::apiResource('rak', RakController::class);
 Route::apiResource('kategori-barang', KategoriBarangController::class);
 Route::apiResource('barang', BarangController::class);
-Route::patch('/barang/update/{id_barang}', [BarangController::class, 'update']);
+Route::apiResource('transaksi-barang', TransaksiBarangController::class);
+Route::apiResource('users', UserController::class);
+Route::apiResource('detail-transaksi-barang', DetailTransaksiBarangController::class);

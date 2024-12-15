@@ -113,12 +113,6 @@ class BarangController extends Controller
         ], 200);
     }
 
-
-
-
-
-
-
     // Delete a barang
     public function destroy($id)
     {

@@ -9,7 +9,8 @@ class RakController extends Controller
 {
     public function index()
     {
-        return RakModel::all();
+        $raks = RakModel::all(['id_rak', 'nama_rak']);
+        return response()->json($raks, 200);
     }
 
     public function store(Request $request)

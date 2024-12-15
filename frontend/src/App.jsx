@@ -25,6 +25,13 @@ import JenisBarangDashboard from "./pages/gudang/barang/JenisBarang/Dashboard";
 import JenisBarangAdd from "./pages/gudang/barang/JenisBarang/TambahBarang";
 import JenisBarangEdit from "./pages/gudang/barang/JenisBarang/EditBarang";
 import ShowBarang from "./pages/gudang/barang/JenisBarang/ShowBarang";
+import TransaksiBarangDashboard from "./pages/gudang/transaksi_barang/Dashboard";
+import TransaksiBarangAdd from "./pages/gudang/transaksi_barang/TambahDataTransaksi";
+import TransaksiBarangEdit from "./pages/gudang/transaksi_barang/EditTransaksi";
+import TransaksiBarangDetail from "./pages/gudang/transaksi_barang/TransaksiDetail";
+import DetailTransaksiBarangDashboard from "./pages/gudang/DetailTransaksiBarang/Dashboard";
+import DetailTransaksiBarangAdd from "./pages/gudang/DetailTransaksiBarang/TambahDataForm";
+import EditDetailTransaksi from "./pages/gudang/DetailTransaksiBarang/EditDetailFormTransaksi";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -62,10 +69,24 @@ const App = () => {
         {/* Rute login */}
         <Route path="/" element={<LoginPage setUser={handleLogin} />} />
 
+        <Route
+          path="/gudang/detail-transaksi-barang/edit-data/:id_detail"
+          element={<EditDetailTransaksi />}
+        />
+
         {/* Rute yang tidak memerlukan autentikasi */}
+        <Route path="/edit-transaksi/:id" element={<TransaksiBarangEdit />} />
         <Route
           path="/gudang/dashboard/supplier/add-supplier"
           element={<AddSupplier />}
+        />
+        <Route
+          path="/transaksi-barang/create"
+          element={<TransaksiBarangAdd />}
+        />
+        <Route
+          path="/gudang/detail-transaksi-barang/dashboard"
+          element={<DetailTransaksiBarangDashboard />}
         />
         <Route path="/edit-supplier/:id" element={<EditSupplier />} />
         <Route path="/show-supplier/:id" element={<ShowSupplier />} />
@@ -99,10 +120,23 @@ const App = () => {
           element={<JenisBarangAdd />}
         />
         <Route
+          path="/gudang/detail-transaksi-barang/tambah-data"
+          element={<DetailTransaksiBarangAdd />}
+        />
+
+        <Route
           path="/gudang/barang/edit/:id_barang"
           element={<JenisBarangEdit />}
         />
         <Route path="/gudang/barang/show/:id_barang" element={<ShowBarang />} />
+        <Route
+          path="/gudang/transaksi-barang/dashboard"
+          element={<TransaksiBarangDashboard />}
+        />
+        <Route
+          path="/transaksi-barang/:id"
+          element={<TransaksiBarangDetail />}
+        />
 
         {/* Rute yang memerlukan autentikasi */}
         <Route

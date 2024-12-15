@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'suppliers', 'rak', 'kategori-barang', 'barang'],
+    'paths' => ['api/*', 'suppliers', 'rak', 'kategori-barang', 'barang', 'transaksi-barang'],
 
     'allowed_methods' => ['*'],
 

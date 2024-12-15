@@ -3,151 +3,141 @@ import Sidebar from "../layouts/Sidebar";
 import Navbar from "../layouts/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../../index.css";
 
-const Dashboard = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+const DashboardSupplier = () => {
   const [suppliers, setSuppliers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Menambahkan state untuk error
-  const navigate = useNavigate(); // Menggunakan useNavigate untuk menggantikan history.push
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const navigate = useNavigate();
 
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
-
+  // Fetch data suppliers when the page loads
   useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/suppliers");
+        setSuppliers(response.data); // Assuming response.data is an array of suppliers
+      } catch (error) {
+        console.error("Error fetching suppliers:", error);
+      }
+    };
     fetchSuppliers();
   }, []);
 
-  const fetchSuppliers = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/suppliers");
-      setSuppliers(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching suppliers:", error);
-      setError("There was an error fetching the supplier data.");
-      setLoading(false);
+  // Handle delete supplier
+  const handleDelete = async (id) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus supplier ini?")) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/suppliers/${id}`);
+        alert("Supplier berhasil dihapus!");
+        setSuppliers(
+          suppliers.filter((supplier) => supplier.id_supplier !== id)
+        ); // Update state after deletion
+      } catch (error) {
+        console.error("Error deleting supplier:", error);
+      }
     }
-  };
-
-  const deleteSupplier = async (id) => {
-    try {
-      await axios.delete(`http://127.0.0.1:8000/api/suppliers/${id}`);
-      setSuppliers(suppliers.filter((supplier) => supplier.id_supplier !== id));
-    } catch (error) {
-      console.error("Error deleting supplier:", error);
-    }
-  };
-
-  const handleAddSupplier = () => {
-    navigate("/gudang/dashboard/supplier/add-supplier"); // Mengarahkan ke halaman tambah supplier
-  };
-
-  const handleEditSupplier = (id) => {
-    navigate(`/edit-supplier/${id}`); // Mengarahkan ke halaman edit supplier
-  };
-
-  const handleShowSupplier = (id) => {
-    navigate(`/show-supplier/${id}`); // Mengarahkan ke halaman detail supplier
   };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <Sidebar isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <Navbar toggleSidebar={toggleSidebar} />
+        <Navbar
+          toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
 
         {/* Main Dashboard Content */}
         <main className="flex-1 p-4">
-          <div className="bg-white p-6 shadow-lg rounded-lg">
-            <h1 className="text-2xl font-bold text-gray-800">Dashboard Rak</h1>
-            <p className="text-gray-600">
-              This is where your main content goes.
-            </p>
+          <div className="bg-white p-6 shadow-lg rounded-lg mb-4">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Dashboard Supplier
+            </h1>
+            <p className="text-gray-600">Kelola data supplier di sini.</p>
           </div>
 
+          {/* Supplier Table */}
           <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Data Supplier</h1>
-
-            {/* Tombol Tambah Supplier */}
-            <button
-              onClick={handleAddSupplier}
-              className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Tambah Supplier
-            </button>
-
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p> // Menampilkan pesan error jika ada masalah
-            ) : suppliers.length === 0 ? (
-              <p>No suppliers found.</p> // Menampilkan pesan jika tidak ada supplier
-            ) : (
-              <table className="table-auto w-full text-left border-collapse border border-gray-300">
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full border-collapse border border-gray-200">
                 <thead>
-                  <tr>
-                    <th className="border border-gray-300 px-4 py-2">Nama</th>
-                    <th className="border border-gray-300 px-4 py-2">Email</th>
-                    <th className="border border-gray-300 px-4 py-2">
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-200 px-4 py-2">
+                      Nama Supplier
+                    </th>
+                    <th className="border border-gray-200 px-4 py-2">Email</th>
+                    <th className="border border-gray-200 px-4 py-2">
                       No. Telp
                     </th>
-                    <th className="border border-gray-300 px-4 py-2">Alamat</th>
-                    <th className="border border-gray-300 px-4 py-2">Action</th>
+                    <th className="border border-gray-200 px-4 py-2">Alamat</th>
+                    <th className="border border-gray-200 px-4 py-2">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {suppliers.map((supplier) => (
-                    <tr key={supplier.id_supplier}>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {supplier.nama_supplier}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {supplier.email}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {supplier.no_telp}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {supplier.alamat}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        <button
-                          className="text-blue-500 hover:text-blue-700"
-                          onClick={() =>
-                            handleEditSupplier(supplier.id_supplier)
-                          } // Menggunakan handleEditSupplier untuk edit
-                        >
-                          Edit
-                        </button>
-                        <span className="mx-2">|</span>
-                        <button
-                          className="text-green-500 hover:text-green-700"
-                          onClick={() =>
-                            handleShowSupplier(supplier.id_supplier)
-                          } // Tombol Show
-                        >
-                          Show
-                        </button>
-                        <span className="mx-2">|</span>
-                        <button
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() => deleteSupplier(supplier.id_supplier)}
-                        >
-                          Delete
-                        </button>
+                  {suppliers.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="px-4 py-2 text-center text-gray-500"
+                      >
+                        Belum ada supplier
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    suppliers.map((supplier) => (
+                      <tr key={supplier.id_supplier}>
+                        <td className="border border-gray-200 px-4 py-2">
+                          {supplier.nama_supplier}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2">
+                          {supplier.email}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2">
+                          {supplier.no_telp}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2">
+                          {supplier.alamat}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2">
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/gudang/supplier/show/${supplier.id_supplier}`
+                              )
+                            }
+                            className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 mr-2"
+                          >
+                            Show
+                          </button>
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/gudang/supplier/edit/${supplier.id_supplier}`
+                              )
+                            }
+                            className="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-600 mr-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(supplier.id_supplier)}
+                            className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
-            )}
+            </div>
           </div>
         </main>
       </div>
@@ -155,4 +145,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardSupplier;

@@ -14,7 +14,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
         isCollapsed ? "w-20" : "w-64"
       }`}
     >
-      <div className="h-full flex flex-col">
+      <div className="min-h-full flex flex-col">
         <div className="p-3 text-center">
           <h1 className="text-2xl font-extrabold">
             {isCollapsed ? "WP" : "WarungPro"}
@@ -109,7 +109,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
               <ul className="ml-6 mt-2 space-y-2">
                 <li>
                   <Link
-                    to="/transaksi-barang/transaksi"
+                    to="/gudang/transaksi-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (
@@ -119,7 +119,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                 </li>
                 <li>
                   <Link
-                    to="/transaksi-barang/detail-transaksi"
+                    to="/gudang/detail-transaksi-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (
