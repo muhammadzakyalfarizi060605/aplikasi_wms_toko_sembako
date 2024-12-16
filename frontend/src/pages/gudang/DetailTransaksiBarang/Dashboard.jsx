@@ -23,6 +23,25 @@ const Dashboard = () => {
       });
   }, []);
 
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm(
+      "Apakah Anda yakin ingin menghapus data ini?"
+    );
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:8000/api/detail-transaksi-barang/${id}`)
+        .then(() => {
+          alert("Data berhasil dihapus");
+          // Perbarui daftar data setelah penghapusan
+          setDetails(details.filter((detail) => detail.id_detail !== id));
+        })
+        .catch((error) => {
+          console.error("Error deleting data:", error);
+          alert("Terjadi kesalahan saat menghapus data");
+        });
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -106,10 +125,10 @@ const Dashboard = () => {
                           : "N/A"}
                       </td>
                       <td className="border border-gray-300 p-2">
-                        {detail.satuan || "N/A"}
+                        {detail.jumlah_barang || "N/A"}
                       </td>
                       <td className="border border-gray-300 p-2">
-                        {detail.harga_beli_satuan}
+                        {detail.satuan}
                       </td>
                       <td className="border border-gray-300 p-2">
                         {detail.tanggal_kadaluwarsa || "N/A"}
@@ -125,10 +144,18 @@ const Dashboard = () => {
                             Edit
                           </button>
                         </Link>
-                        <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mr-2">
-                          Show
-                        </button>
-                        <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                        <Link
+                          to={`/detail-transaksi-barang/${detail.id_detail}`}
+                        >
+                          <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mr-2">
+                            Show
+                          </button>
+                        </Link>
+
+                        <button
+                          className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                          onClick={() => handleDelete(detail.id_detail)}
+                        >
                           Delete
                         </button>
                       </td>

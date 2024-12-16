@@ -32,6 +32,7 @@ import TransaksiBarangDetail from "./pages/gudang/transaksi_barang/TransaksiDeta
 import DetailTransaksiBarangDashboard from "./pages/gudang/DetailTransaksiBarang/Dashboard";
 import DetailTransaksiBarangAdd from "./pages/gudang/DetailTransaksiBarang/TambahDataForm";
 import EditDetailTransaksi from "./pages/gudang/DetailTransaksiBarang/EditDetailFormTransaksi";
+import DetailTransaksi from "./pages/gudang/DetailTransaksiBarang/DetailTransaksi";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -66,6 +67,11 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route
+          path="/detail-transaksi-barang/:id_detail"
+          element={<DetailTransaksi />}
+        />
+
         {/* Rute login */}
         <Route path="/" element={<LoginPage setUser={handleLogin} />} />
 

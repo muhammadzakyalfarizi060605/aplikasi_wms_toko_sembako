@@ -9,46 +9,61 @@ const FormDetailTransaksi = () => {
   const [formData, setFormData] = useState({
     id_transaksi: "",
     id_barang: "",
-    nama_barang: "",
     id_rak: "",
-    jumlah_barang: 0,
-    satuan: "",
-    harga_beli_satuan: 0,
-    tanggal_kadaluwarsa: "",
-    status: "disimpan", // Default status
+    nama_barang: "",
+    tanggal_transaksi: "",
     id_rak_tujuan: "",
+    jumlah_barang: "",
+    satuan: "", // Menyimpan nama satuan
+    harga_beli_satuan: "",
+    tanggal_kadaluwarsa: "",
+    status: "disimpan", // Status default
   });
   const [rakOptions, setRakOptions] = useState([]);
   const [barangOptions, setBarangOptions] = useState([]);
+  const [transaksiOptions, setTransaksiOptions] = useState([]);
   const navigate = useNavigate();
   const { id_detail } = useParams();
 
   useEffect(() => {
+    // Fungsi untuk mengambil data rak
     const fetchRakOptions = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/rak");
-        setRakOptions(response.data);
+        setRakOptions(response.data); // Menyimpan data rak dalam state rakOptions
       } catch (error) {
         console.error("Error fetching rak options:", error);
       }
     };
 
+    // Fungsi untuk mengambil data barang
     const fetchBarangOptions = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/barang");
         const barangData = response.data;
-
         setBarangOptions(barangData);
+
+        console.log("Barang Data:", barangData);
+        console.log(
+          "ID Barang di FormData sebelum update:",
+          formData.id_barang
+        );
 
         if (formData.id_barang) {
           const selectedBarang = barangData.find(
             (barang) => barang.id_barang === formData.id_barang
           );
+          console.log("Selected Barang:", selectedBarang);
+
           if (selectedBarang) {
-            setFormData((prevFormData) => ({
-              ...prevFormData,
-              nama_barang: selectedBarang.nama_barang,
-            }));
+            setFormData((prevFormData) => {
+              console.log("FormData sebelum update:", prevFormData);
+              return {
+                ...prevFormData,
+                satuan: selectedBarang.satuan,
+                nama_barang: selectedBarang.nama_barang,
+              };
+            });
           }
         }
       } catch (error) {
@@ -56,6 +71,32 @@ const FormDetailTransaksi = () => {
       }
     };
 
+    // Fungsi untuk mengambil data transaksi barang
+    const fetchTransaksiOptions = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/transaksi-barang"
+        );
+        setTransaksiOptions(response.data);
+
+        // Jika id_transaksi sudah ada, set tanggal_transaksi dari data yang dipilih
+        if (formData.id_transaksi) {
+          const selectedTransaksi = response.data.find(
+            (transaksi) => transaksi.id_transaksi === formData.id_transaksi
+          );
+          if (selectedTransaksi) {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              tanggal_transaksi: selectedTransaksi.tanggal_transaksi, // Pastikan data ini ada
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching transaksi options:", error);
+      }
+    };
+
+    // Fungsi untuk mengambil data detail transaksi barang
     const fetchDetail = async () => {
       if (id_detail) {
         try {
@@ -64,10 +105,11 @@ const FormDetailTransaksi = () => {
           );
           const detail = response.data.detail;
 
+          // Update formData sesuai dengan data detail dan status berdasarkan id_rak_tujuan
           setFormData((prevFormData) => ({
             ...prevFormData,
             ...detail,
-            status: detail.id_rak_tujuan ? "dipindahkan" : "disimpan", // Atur status berdasarkan id_rak_tujuan
+            status: detail.id_rak_tujuan ? "dipindahkan" : "disimpan", // Tentukan status berdasarkan id_rak_tujuan
           }));
         } catch (error) {
           console.error("Error fetching detail:", error);
@@ -75,13 +117,17 @@ const FormDetailTransaksi = () => {
       }
     };
 
+    // Memanggil semua fungsi untuk mengambil data
     fetchRakOptions();
     fetchBarangOptions();
+    fetchTransaksiOptions();
     fetchDetail();
-  }, [id_detail]);
+  }, [id_detail, formData.id_barang, formData.id_transaksi]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    console.log("Data Form Yang dikirim :", formData);
 
     const request = id_detail
       ? axios.put(
@@ -96,7 +142,7 @@ const FormDetailTransaksi = () => {
     request
       .then((response) => {
         alert(response.data.message);
-        navigate("/gudang/detail-transaksi-barang");
+        navigate("/gudang/detail-transaksi-barang/dashboard");
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
@@ -105,171 +151,143 @@ const FormDetailTransaksi = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar
-        isCollapsed={isSidebarCollapsed}
-        toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-      />
+    <div>
+      <form onSubmit={handleSubmit} className="p-4">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Nama Barang
+          </label>
+          <input
+            type="text"
+            value={formData.id_barang ? formData.nama_barang : ""}
+            readOnly
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Tanggal Transaksi
+          </label>
+          <input
+            type="text"
+            value={formData.id_transaksi ? formData.tanggal_transaksi : ""}
+            readOnly
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Nama Rak
+          </label>
+          <input
+            type="text"
+            value={formData.id_rak ? formData.nama_rak : ""}
+            readOnly
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
 
-      <div className="flex-1 flex flex-col">
-        <Navbar
-          toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Jumlah Barang
+          </label>
+          <input
+            type="number"
+            value={formData.jumlah_barang}
+            onChange={(e) =>
+              setFormData({ ...formData, jumlah_barang: e.target.value })
+            }
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
 
-        <main className="flex-1 p-4">
-          <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold">
-              {id_detail ? "Edit" : "Tambah"} Detail Transaksi Barang
-            </h1>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Satuan
+          </label>
+          <input
+            type="text"
+            value={formData.satuan}
+            readOnly
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">
-                  Tanggal Transaksi
-                </label>
-                <input
-                  type="date"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.tanggal_transaksi || ""}
-                  readOnly
-                />
-              </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Harga Beli Satuan
+          </label>
+          <input
+            type="number"
+            value={formData.harga_beli_satuan}
+            onChange={(e) =>
+              setFormData({ ...formData, harga_beli_satuan: e.target.value })
+            }
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
 
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">Nama Barang</label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.nama_barang || "Data tidak tersedia"}
-                  readOnly
-                />
-              </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Tanggal Kadaluarsa
+          </label>
+          <input
+            type="date"
+            value={formData.tanggal_kadaluwarsa}
+            onChange={(e) =>
+              setFormData({ ...formData, tanggal_kadaluwarsa: e.target.value })
+            }
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
 
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">Rak</label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={
-                    rakOptions.find((rak) => rak.id_rak === formData.id_rak)
-                      ?.nama_rak || ""
-                  }
-                  readOnly
-                />
-              </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Status
+          </label>
+          <select
+            value={formData.status}
+            onChange={(e) =>
+              setFormData({ ...formData, status: e.target.value })
+            }
+            className="mt-1 p-2 w-full border rounded"
+          >
+            <option value="disimpan">Disimpan</option>
+            <option value="dipindahkan">Dipindahkan</option>
+          </select>
+        </div>
 
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">
-                  Jumlah Barang
-                </label>
-                <input
-                  type="number"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.jumlah_barang}
-                  onChange={(e) =>
-                    setFormData({ ...formData, jumlah_barang: e.target.value })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">Satuan</label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.satuan}
-                  readOnly
-                />
-              </div>
-
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">
-                  Harga Beli Satuan
-                </label>
-                <input
-                  type="number"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.harga_beli_satuan}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      harga_beli_satuan: e.target.value,
-                    })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">
-                  Tanggal Kadaluwarsa
-                </label>
-                <input
-                  type="date"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={formData.tanggal_kadaluwarsa}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      tanggal_kadaluwarsa: e.target.value,
-                    })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col mb-4">
-                <label className="block text-sm font-medium">Status</label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  value={
-                    formData.status === "disimpan" ? "Disimpan" : "Dipindah"
-                  }
-                  readOnly
-                />
-              </div>
-
-              {formData.status === "dipindahkan" && (
-                <div className="flex flex-col mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
-                    Rak Tujuan
-                  </label>
-                  <select
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                    value={formData.id_rak_tujuan}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        id_rak_tujuan: e.target.value,
-                      })
-                    }
-                    required
-                  >
-                    <option value="">Pilih Rak</option>
-                    {rakOptions.map((rak) => (
-                      <option key={rak.id_rak} value={rak.id_rak}>
-                        {rak.nama_rak}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div className="col-span-2">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                >
-                  Simpan
-                </button>
-              </div>
-            </form>
+        {formData.status === "dipindahkan" && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Lokasi Rak Tujuan
+            </label>
+            <select
+              value={formData.id_rak_tujuan}
+              onChange={(e) =>
+                setFormData({ ...formData, id_rak_tujuan: e.target.value })
+              }
+              className="mt-1 p-2 w-full border rounded"
+            >
+              <option value="">Pilih Rak Tujuan</option>
+              {rakOptions.map((rak) => (
+                <option key={rak.id_rak} value={rak.id_rak}>
+                  {rak.nama_rak}
+                </option>
+              ))}
+            </select>
           </div>
-        </main>
-      </div>
+        )}
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          {id_detail ? "Update" : "Create"}
+        </button>
+      </form>
     </div>
   );
 };
+
 export default FormDetailTransaksi;

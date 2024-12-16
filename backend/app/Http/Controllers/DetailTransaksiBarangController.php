@@ -53,9 +53,12 @@ class DetailTransaksiBarangController extends Controller
         return response()->json([
             'detail' => [
                 'id_detail' => $detail->id_detail,
+                'id_barang' => $detail->id_barang,
+                'id_transaksi' => $detail->id_transaksi,
                 'tanggal_transaksi' => $detail->transaksi_barang->tanggal_transaksi ?? null,
                 'nama_barang' => $detail->barang->nama_barang ?? null,
                 'id_rak' => $detail->rak->id_rak,
+                'nama_rak_tujuan' => $detail->rakTujuan->nama_rak_tujuan ?? null,
                 'nama_rak' => $detail->rak->nama_rak ?? null,
                 'jumlah_barang' => $detail->jumlah_barang,
                 'satuan' => $detail->barang->satuan ?? null,
@@ -77,7 +80,7 @@ class DetailTransaksiBarangController extends Controller
             'satuan' => 'required|string',
             'harga_beli_satuan' => 'required|numeric|min:0',
             'tanggal_kadaluwarsa' => 'required|date',
-            'status' => 'required|string|in:disimpan,terjual',
+            'status' => 'required|string|in:disimpan',
         ]);
 
         try {
@@ -121,7 +124,7 @@ class DetailTransaksiBarangController extends Controller
             'satuan' => 'required|string',
             'harga_beli_satuan' => 'required|numeric|min:0',
             'tanggal_kadaluwarsa' => 'required|date',
-            'status' => 'required|string|in:disimpan,terjual,dipindah',
+            'status' => 'required|string|in:disimpan,dipindahkan',
             'id_rak_tujuan' => 'nullable|exists:rak,id_rak', // Only required if status is 'dipindah'
         ]);
 
@@ -133,19 +136,35 @@ class DetailTransaksiBarangController extends Controller
                 return response()->json(['message' => 'Detail transaksi barang tidak ditemukan.'], 404);
             }
 
+            // Calculate the change in jumlah_barang
+            $previous_jumlah_barang = $detail->jumlah_barang;
+            $new_jumlah_barang = $request->jumlah_barang;
+            $jumlah_barang_change = $new_jumlah_barang - $previous_jumlah_barang;
+
             // Update the detail
             $detail->id_transaksi = $request->id_transaksi;
             $detail->id_barang = $request->id_barang;
-            $detail->id_rak = $request->id_rak; // Keep the rak read-only for editing
-            $detail->jumlah_barang = $request->jumlah_barang;
+            $detail->id_rak = $request->id_rak;
+            $detail->jumlah_barang = $new_jumlah_barang;
             $detail->satuan = $request->satuan;
             $detail->harga_beli_satuan = $request->harga_beli_satuan;
             $detail->tanggal_kadaluwarsa = $request->tanggal_kadaluwarsa;
             $detail->status = $request->status;
             $detail->id_rak_tujuan = $request->id_rak_tujuan;
 
-            // Save the updated data
+            // Save the updated data for detail
             $detail->save();
+
+            // Update the stock quantity in the 'barang' table
+            $barang = BarangModel::find($request->id_barang);
+
+            if ($barang) {
+                // Adjust the stock based on the change in jumlah_barang
+                $barang->jumlah_stok += $jumlah_barang_change;
+                $barang->save();
+            } else {
+                return response()->json(['message' => 'Barang tidak ditemukan.'], 404);
+            }
 
             return response()->json([
                 'message' => 'Data berhasil diperbarui!',
@@ -158,6 +177,7 @@ class DetailTransaksiBarangController extends Controller
             ], 500);
         }
     }
+
     public function destroy($id_detail)
     {
         try {
