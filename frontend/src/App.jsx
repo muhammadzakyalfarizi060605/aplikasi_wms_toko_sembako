@@ -33,6 +33,7 @@ import DetailTransaksiBarangDashboard from "./pages/gudang/DetailTransaksiBarang
 import DetailTransaksiBarangAdd from "./pages/gudang/DetailTransaksiBarang/TambahDataForm";
 import EditDetailTransaksi from "./pages/gudang/DetailTransaksiBarang/EditDetailFormTransaksi";
 import DetailTransaksi from "./pages/gudang/DetailTransaksiBarang/DetailTransaksi";
+import LaporanStok from "./pages/gudang/LaporanStok";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -67,6 +68,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/laporan_stok/dashboard" element={<LaporanStok />} />
         <Route
           path="/detail-transaksi-barang/:id_detail"
           element={<DetailTransaksi />}

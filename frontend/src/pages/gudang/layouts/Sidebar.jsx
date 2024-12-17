@@ -134,7 +134,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
           {/* Laporan Stok Menu */}
           <li>
             <Link
-              to="/laporan-stok"
+              to="/laporan_stok/dashboard"
               className={`flex items-center font-extrabold ml-2 p-3 rounded-tl-xl rounded-bl-xl ${
                 clicked === 3
                   ? "bg-white text-black"
