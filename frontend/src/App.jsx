@@ -34,6 +34,10 @@ import DetailTransaksiBarangAdd from "./pages/gudang/DetailTransaksiBarang/Tamba
 import EditDetailTransaksi from "./pages/gudang/DetailTransaksiBarang/EditDetailFormTransaksi";
 import DetailTransaksi from "./pages/gudang/DetailTransaksiBarang/DetailTransaksi";
 import LaporanStok from "./pages/gudang/LaporanStok";
+import TransaksiPenjualanDashboard from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/Dashboard";
+import TransaksiPenjualanAdd from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/TambahDataTransaksiPenjualan";
+import TransaksiPenjualanEdit from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/EditDataTransaksiPenjualan";
+import TransaksiPenjualanShow from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/DetailTransaksiPenjualan";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -68,6 +72,22 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route
+          path="/kasir/transaksi-penjualan/tambah-data"
+          element={<TransaksiPenjualanAdd />}
+        />
+        <Route
+          path="/kasir/transaksi-penjualan/detail-data/:id"
+          element={<TransaksiPenjualanShow />}
+        />
+        <Route
+          path="/kasir/transaksi-penjualan/edit-data/:id"
+          element={<TransaksiPenjualanEdit />}
+        />
+        <Route
+          path="/kasir/transaksi-penjualan/dashboard"
+          element={<TransaksiPenjualanDashboard />}
+        />
         <Route path="/laporan_stok/dashboard" element={<LaporanStok />} />
         <Route
           path="/detail-transaksi-barang/:id_detail"

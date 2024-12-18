@@ -13,7 +13,7 @@ class UserModel extends Model
 
     protected $table = 'users'; // Sesuaikan nama tabel jika berbeda
 
-    protected $primaryKey = 'id_supplier';
+    protected $primaryKey = 'id';
     protected $fillable = ['nama_lengkap', 'email', 'password', 'role'];
     public $timestamps = true;
 }
