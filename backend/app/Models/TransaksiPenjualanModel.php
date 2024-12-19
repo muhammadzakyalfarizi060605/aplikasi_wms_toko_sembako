@@ -29,4 +29,9 @@ class TransaksiPenjualanModel extends Model
     {
         return $this->belongsTo(UserModel::class, 'id_user');
     }
+    public function detailTransaksi()
+    {
+        // Misalkan Anda ingin membuat relasi one-to-many atau lainnya
+        return $this->hasMany(DetailTransaksiPenjualanModel::class, 'id_penjualan', 'id_penjualan');
+    }
 }

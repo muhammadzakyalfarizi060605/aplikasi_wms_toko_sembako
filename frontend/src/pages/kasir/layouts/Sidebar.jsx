@@ -59,7 +59,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                 </li>
                 <li>
                   <Link
-                    to="/gudang/detail-transaksi-barang/dashboard"
+                    to="/kasir/detail-transaksi-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (
@@ -74,7 +74,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
           {/* Laporan Stok Menu */}
           <li>
             <Link
-              to="/laporan_stok/dashboard"
+              to="/kasir/detail-transaksi-penjualan/laporan_stok/dashboard"
               className={`flex items-center font-extrabold ml-2 p-3 rounded-tl-xl rounded-bl-xl ${
                 clicked === 3
                   ? "bg-white text-black"

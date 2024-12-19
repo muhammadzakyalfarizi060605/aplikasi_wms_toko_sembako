@@ -30,5 +30,10 @@ class BarangModel extends Model
     {
         return $this->belongsTo(KategoriBarangModel::class, 'id_kategori', 'id_kategori');
     }
+    // Relasi dengan model DetailTransaksiPenjualanModel
+    public function detailTransaksiPenjualans()
+    {
+        return $this->hasMany(DetailTransaksiPenjualanModel::class, 'id_barang');
+    }
     public $timestamps = true;
 }

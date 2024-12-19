@@ -38,6 +38,11 @@ import TransaksiPenjualanDashboard from "./pages/kasir/transaksi_penjualan/Trans
 import TransaksiPenjualanAdd from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/TambahDataTransaksiPenjualan";
 import TransaksiPenjualanEdit from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/EditDataTransaksiPenjualan";
 import TransaksiPenjualanShow from "./pages/kasir/transaksi_penjualan/TransaksiPenjualan/DetailTransaksiPenjualan";
+import DetailTransaksiPenjualanDashboard from "./pages/kasir/transaksi_penjualan/DetailTransaksiPenjualan/Dashboard";
+import DetailTransaksiPenjualanAdd from "./pages/kasir/transaksi_penjualan/DetailTransaksiPenjualan/TambahDataDetailPenjualan";
+import DetailTransaksiPenjualanEdit from "./pages/kasir/transaksi_penjualan/DetailTransaksiPenjualan/EditDataDetailPenjualan";
+import DetailTransaksiPenjualanShow from "./pages/kasir/transaksi_penjualan/DetailTransaksiPenjualan/DetailDataPenjualan";
+import DetailTransaksiPenjualanLaporan from "./pages/kasir/transaksi_penjualan/LaporanPenjualan";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -72,6 +77,26 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route
+          path="kasir/detail-transaksi-penjualan/laporan_stok/dashboard"
+          element={<DetailTransaksiPenjualanLaporan />}
+        />
+        <Route
+          path="/kasir/detail-transaksi-penjualan/detail-data/:id"
+          element={<DetailTransaksiPenjualanShow />}
+        />
+        <Route
+          path="/edit-transaksi-penjualan/:id"
+          element={<DetailTransaksiPenjualanEdit />}
+        />
+        <Route
+          path="/kasir/detail-transaksi-penjualan/tambah-data"
+          element={<DetailTransaksiPenjualanAdd />}
+        />
+        <Route
+          path="/kasir/detail-transaksi-barang/dashboard"
+          element={<DetailTransaksiPenjualanDashboard />}
+        />
         <Route
           path="/kasir/transaksi-penjualan/tambah-data"
           element={<TransaksiPenjualanAdd />}
