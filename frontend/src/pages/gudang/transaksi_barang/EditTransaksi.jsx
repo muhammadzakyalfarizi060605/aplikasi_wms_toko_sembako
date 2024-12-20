@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const EditTransaksiForm = () => {
   const { id } = useParams(); // Get the ID of the transaksi from the URL
@@ -24,11 +25,16 @@ const EditTransaksiForm = () => {
         console.error("There was an error fetching the transaksi data!", error);
       });
 
-    // Fetch users and suppliers (you can replace this with your actual API)
+    // Fetch users and filter by role "gudang"
     axios.get("http://localhost:8000/api/users").then((response) => {
-      setUsers(response.data);
+      // Filter users based on role
+      const filteredUsers = response.data.filter(
+        (user) => user.role === "gudang"
+      );
+      setUsers(filteredUsers);
     });
 
+    // Fetch suppliers
     axios.get("http://localhost:8000/api/suppliers").then((response) => {
       setSuppliers(response.data);
     });
@@ -48,11 +54,24 @@ const EditTransaksiForm = () => {
     axios
       .put(`http://localhost:8000/api/transaksi-barang/${id}`, transaksi)
       .then((response) => {
-        alert("Data updated successfully");
-        navigate("/gudang/transaksi-barang/dashboard"); // Use navigate to redirect to transaksi list page
+        // Success Alert using SweetAlert
+        Swal.fire({
+          title: "Success!",
+          text: "Data updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/gudang/transaksi-barang/dashboard"); // Use navigate to redirect to transaksi list page
+        });
       })
       .catch((error) => {
-        console.error("There was an error updating the transaksi!", error);
+        // Error Alert using SweetAlert
+        Swal.fire({
+          title: "Error!",
+          text: "There was an error updating the transaksi.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
       });
   };
 

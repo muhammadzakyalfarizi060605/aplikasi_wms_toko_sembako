@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Pastikan axios sudah terinstall
 import { useParams, useNavigate } from "react-router-dom"; // Menggunakan useNavigate
+import Swal from "sweetalert2"; // Import SweetAlert
 
 const EditPage = () => {
   const { id_rak } = useParams(); // Mengambil parameter id_rak dari URL
@@ -22,6 +23,12 @@ const EditPage = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching rak:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error fetching the rak data.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -33,9 +40,23 @@ const EditPage = () => {
     e.preventDefault();
     try {
       await axios.put(`http://127.0.0.1:8000/api/rak/${id_rak}`, rak);
-      navigate(`/gudang/rak/dashboard`); // Menggunakan navigate untuk kembali ke halaman show setelah edit
+      // Success alert
+      Swal.fire({
+        title: "Success!",
+        text: "Rak updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      navigate(`/gudang/rack/dashboard`); // Navigate to the dashboard after success
     } catch (error) {
       console.error("Error updating rak:", error);
+      // Error alert
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error updating the rak.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

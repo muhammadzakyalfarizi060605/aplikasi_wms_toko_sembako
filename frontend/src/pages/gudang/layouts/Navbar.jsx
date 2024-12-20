@@ -1,16 +1,35 @@
 import React, { useState } from "react";
-// Import ikon HiUser dari Heroicons
 import { HiUser } from "react-icons/hi";
-{
-  /* Impor ikon HiUser dari react-icons/hi */
-}
+import Swal from "sweetalert2"; // Impor SweetAlert
+import { useNavigate } from "react-router-dom"; // Impor useNavigate
 
 function Navbar({ toggleSidebar }) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const navigate = useNavigate(); // Inisialisasi useNavigate
 
   // Toggle dropdown menu user
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  // Fungsi untuk logout
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Anda yakin ingin logout?",
+      text: "Semua sesi Anda akan diakhiri!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Logout logic (bisa ditambahkan logika seperti menghapus token)
+        Swal.fire("Logout Berhasil", "Anda telah keluar.", "success");
+        navigate("/"); // Navigasi ke halaman login
+      }
+    });
   };
 
   return (
@@ -25,7 +44,7 @@ function Navbar({ toggleSidebar }) {
         </button>
       </div>
       <div className="relative">
-        {/* User Icon with Circle from Flowbite's HiUser */}
+        {/* User Icon */}
         <button
           className="p-1 mx-4 rounded-full bg-white text-slate-950 hover:bg-gray-200"
           onClick={toggleUserMenu}
@@ -34,15 +53,12 @@ function Navbar({ toggleSidebar }) {
         </button>
         {/* User Menu Dropdown */}
         {isUserMenuOpen && (
-          <div className="absolute right-4 mt-4 w-48 bg-white text-black rounded-lg shadow-lg">
+          <div className="absolute right-4 mt-4 w-48 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-400">
             <ul>
-              <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer rounded-lg">
-                Profile
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer rounded-lg">
-                Settings
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer rounded-lg">
+              <li
+                className="px-4 py-2 cursor-pointer rounded-lg"
+                onClick={handleLogout} // Tambahkan handleLogout di sini
+              >
                 Logout
               </li>
             </ul>

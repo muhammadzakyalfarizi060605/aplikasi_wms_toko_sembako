@@ -3,6 +3,7 @@ import Sidebar from "../layouts/Sidebar";
 import Navbar from "../layouts/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // For navigation
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -19,6 +20,15 @@ const Dashboard = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching raks:", error);
+
+      // Show error alert
+      Swal.fire({
+        title: "Terjadi kesalahan!",
+        text: "Tidak dapat memuat data rak.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+
       setLoading(false); // Stop loading even if there's an error
     }
   };
@@ -27,29 +37,48 @@ const Dashboard = () => {
     fetchRaks();
   }, []);
 
-  // Delete rak
   const deleteRak = async (id_rak) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+    // Use SweetAlert2 for confirmation
+    const result = await Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data ini akan dihapus secara permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`http://127.0.0.1:8000/api/rak/${id_rak}`);
         setRaks(raks.filter((rak) => rak.id_rak !== id_rak)); // Remove rak from state
+
+        // Show success alert
+        Swal.fire("Dihapus!", "Rak berhasil dihapus.", "success");
       } catch (error) {
         console.error("Error deleting rak:", error);
+
+        // Show error alert
+        Swal.fire({
+          title: "Terjadi kesalahan!",
+          text: "Tidak dapat menghapus rak karena data ini ada relasinya.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     }
   };
 
   const handleAddRak = () => {
-    navigate("/gudang/rak/add-rak");
+    navigate("/gudang/rack/create");
   };
 
   const handleEditRak = (id_rak) => {
-    navigate(`/gudang/rak/edit-rak/${id_rak}`); // Ensure the URL has the correct path with id_rak
+    navigate(`/gudang/rack/edit/${id_rak}`); // Ensure the URL has the correct path with id_rak
   };
 
   const handleShowRak = (id_rak) => {
-    console.log(id_rak);
-    navigate(`/show-rak/${id_rak}`); // Ensure the URL has the correct path with id_rak
+    navigate(`/gudang/rack/view/${id_rak}`); // Ensure the URL has the correct path with id_rak
   };
 
   return (
@@ -98,42 +127,50 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {raks.map((rak, index) => (
-                      <tr key={rak.id_rak}>
-                        <td className="border border-gray-200 px-4 py-2">
-                          {index + 1}
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          {rak.kode_rak}
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          {rak.nama_rak}
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          {rak.lokasi_rak}
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          <button
-                            className="text-green-500 hover:text-green-700"
-                            onClick={() => handleShowRak(rak.id_rak)} // Tombol Show
-                          >
-                            Show
-                          </button>
-                          <button
-                            className="text-yellow-500 hover:text-yellow-700 mr-2"
-                            onClick={() => handleEditRak(rak.id_rak)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-700"
-                            onClick={() => deleteRak(rak.id_rak)}
-                          >
-                            Delete
-                          </button>
+                    {raks.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="text-center text-gray-500">
+                          Tidak ada data rak.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      raks.map((rak, index) => (
+                        <tr key={rak.id_rak}>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {index + 1}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {rak.kode_rak}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {rak.nama_rak}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {rak.lokasi_rak}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            <button
+                              className="text-green-500 hover:text-green-700"
+                              onClick={() => handleShowRak(rak.id_rak)} // Tombol Show
+                            >
+                              Show
+                            </button>
+                            <button
+                              className="text-yellow-500 hover:text-yellow-700 mr-2"
+                              onClick={() => handleEditRak(rak.id_rak)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => deleteRak(rak.id_rak)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               )}

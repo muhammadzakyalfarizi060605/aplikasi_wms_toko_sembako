@@ -82,7 +82,7 @@ const ShowBarang = () => {
 
             <div className="mt-4">
               <button
-                onClick={() => navigate("/gudang/dashboard")}
+                onClick={() => navigate("/gudang/jenis-barang/dashboard")}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
               >
                 Kembali ke Dashboard

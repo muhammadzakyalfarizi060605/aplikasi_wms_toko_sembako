@@ -5,18 +5,19 @@ import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 
 const ShowKategori = () => {
-  const { id } = useParams(); // Mengambil parameter id dari URL
+  const { id_kategori } = useParams(); // Mengambil parameter id dari URL
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [kategori, setKategori] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/kategori-barang/${id}`)
+      .get(`http://localhost:8000/api/kategori-barang/${id_kategori}`)
       .then((res) => {
+        console.log(res.data);
         setKategori(res.data);
       })
       .catch((err) => console.error(err));
-  }, [id]);
+  }, [id_kategori]);
 
   if (!kategori) {
     return <div>Loading...</div>;
@@ -50,7 +51,7 @@ const ShowKategori = () => {
             <h2 className="text-xl font-bold mb-4">{kategori.nama_kategori}</h2>
             <p className="text-gray-600 mb-4">{kategori.deskripsi}</p>
             <Link
-              to="/gudang/kategori-barang/dashboard"
+              to="/gudang/product-categories/dashboard"
               className="bg-blue-500 text-white p-2 rounded"
             >
               Kembali ke Dashboard

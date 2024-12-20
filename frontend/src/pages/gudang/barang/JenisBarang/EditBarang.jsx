@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const EditBarangForm = () => {
   const { id_barang } = useParams(); // Mendapatkan ID barang dari URL
@@ -8,7 +9,7 @@ const EditBarangForm = () => {
   const [barang, setBarang] = useState({
     nama_barang: "",
     kategori_id: "",
-    jumlah_stok: "",
+    jumlah_stok: "0", // Set default value to 0
     satuan: "",
     harga_jual_persatuan: "",
   });
@@ -32,7 +33,11 @@ const EditBarangForm = () => {
       setBarang(response.data);
     } catch (error) {
       console.error("Error fetching barang data:", error);
-      alert("Gagal memuat data barang.");
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Memuat Data",
+        text: "Gagal memuat data barang.",
+      });
     } finally {
       setLoading(false); // Set loading ke false setelah permintaan selesai
     }
@@ -47,7 +52,11 @@ const EditBarangForm = () => {
       setKategori(response.data);
     } catch (error) {
       console.error("Error fetching kategori data:", error);
-      alert("Gagal memuat data kategori.");
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Memuat Data",
+        text: "Gagal memuat data kategori.",
+      });
     }
   };
 
@@ -66,14 +75,26 @@ const EditBarangForm = () => {
         barang
       );
       if (response.data.status === "success") {
-        alert("Data barang berhasil diperbarui.");
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Data barang berhasil diperbarui.",
+        });
         navigate("/gudang/jenis-barang/dashboard"); // Kembali ke halaman dashboard barang
       } else {
-        alert("Gagal memperbarui data barang: " + response.data.message);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: `Gagal memperbarui data barang: ${response.data.message}`,
+        });
       }
     } catch (error) {
       console.error("Error updating barang data:", error);
-      alert("Terjadi kesalahan saat memperbarui data barang.");
+      Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan",
+        text: "Terjadi kesalahan saat memperbarui data barang.",
+      });
     }
   };
 
@@ -148,6 +169,7 @@ const EditBarangForm = () => {
             onChange={handleInputChange}
             className="border rounded w-full py-2 px-3"
             required
+            readOnly // Set readonly
           />
         </div>
 

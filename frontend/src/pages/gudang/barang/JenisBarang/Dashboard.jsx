@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../layouts/Navbar";
 import Sidebar from "../../layouts/Sidebar";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -28,24 +29,46 @@ const Dashboard = () => {
   // Handle delete barang
   const confirmDelete = (barangId) => {
     const deleteUrl = `http://localhost:8000/api/barang/${barangId}`;
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      axios
-        .delete(deleteUrl)
-        .then((response) => {
-          if (response.data.status === "success") {
-            alert("Data barang berhasil dihapus.");
-            setBarangs((prevBarangs) =>
-              prevBarangs.filter((barang) => barang.id_barang !== barangId)
-            ); // Update state tanpa refresh
-          } else {
-            alert("Gagal menghapus data: " + response.data.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting data:", error);
-          alert("Terjadi kesalahan saat menghapus data.");
-        });
-    }
+
+    // Menggunakan SweetAlert2 untuk konfirmasi penghapusan
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data ini akan dihapus secara permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mengirim permintaan untuk menghapus barang
+        axios
+          .delete(deleteUrl)
+          .then((response) => {
+            if (response.data.status === "success") {
+              Swal.fire("Dihapus!", "Data barang berhasil dihapus.", "success");
+              setBarangs((prevBarangs) =>
+                prevBarangs.filter((barang) => barang.id_barang !== barangId)
+              ); // Update state tanpa refresh
+            } else {
+              Swal.fire(
+                "Gagal!",
+                "Gagal menghapus data: " + response.data.message,
+                "error"
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            Swal.fire(
+              "Terjadi kesalahan!",
+              "Terjadi kesalahan saat menghapus data.",
+              "error"
+            );
+          });
+      }
+    });
   };
 
   // Navigate to edit page

@@ -9,18 +9,23 @@ import LoginPage from "./pages/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import KasirDashboard from "./pages/kasir/KasirDashboard";
 import GudangDashboard from "./pages/gudang/GudangDashboard";
-import SupplierDashboard from "./pages/gudang/supplier/Dashboard";
-import AddSupplier from "./pages/gudang/supplier/AddSupplier";
+
+// Bagian untuk data supplier
+import DashboardSupplier from "./pages/gudang/supplier/Dashboard";
+import CreateSupplier from "./pages/gudang/supplier/CreateSupplier";
 import EditSupplier from "./pages/gudang/supplier/EditSupplier";
-import ShowSupplier from "./pages/gudang/supplier/ShowSupplier";
-import RakSupplier from "./pages/gudang/rak/Dashboard";
-import AddRak from "./pages/gudang/rak/AddRak";
-import ShowRak from "./pages/gudang/rak/ShowPage";
-import EditRak from "./pages/gudang/rak/EditPage";
-import KategoriBarangDashboard from "./pages/gudang/barang/KategoriBarang/Dashboard";
-import KategoriBarangEdit from "./pages/gudang/barang/KategoriBarang/KategoriBarangEdit";
-import KategoriBarangAdd from "./pages/gudang/barang/KategoriBarang/KategoriBarangAdd";
-import KategoriBarangShow from "./pages/gudang/barang/KategoriBarang/ShowKategoriBarang";
+import ViewSupplier from "./pages/gudang/supplier/ViewSupplier";
+// Bagian untuk data rack
+import DashboardRack from "./pages/gudang/rack/Dashboard";
+import CreateRack from "./pages/gudang/rack/CreateRack";
+import ViewRack from "./pages/gudang/rack/ViewRack";
+import EditRack from "./pages/gudang/rack/EditRack";
+// Bagian untuk data product kategori
+import DashboardProductCategories from "./pages/gudang/barang/kategori_barang/Dashboard";
+import EditProductCategories from "./pages/gudang/barang/kategori_barang/EditProductCategories";
+import CreateProductCategories from "./pages/gudang/barang/kategori_barang/CreateProductCategories";
+import ViewProductCategories from "./pages/gudang/barang/kategori_barang/ViewProductCategories";
+
 import JenisBarangDashboard from "./pages/gudang/barang/JenisBarang/Dashboard";
 import JenisBarangAdd from "./pages/gudang/barang/JenisBarang/TambahBarang";
 import JenisBarangEdit from "./pages/gudang/barang/JenisBarang/EditBarang";
@@ -78,6 +83,10 @@ const App = () => {
     <Router>
       <Routes>
         <Route
+          path="/gudang/detail-transaksi-barang/edit-data/:id_detail"
+          element={<EditDetailTransaksi />}
+        />
+        <Route
           path="kasir/detail-transaksi-penjualan/laporan_stok/dashboard"
           element={<DetailTransaksiPenjualanLaporan />}
         />
@@ -129,10 +138,7 @@ const App = () => {
 
         {/* Rute yang tidak memerlukan autentikasi */}
         <Route path="/edit-transaksi/:id" element={<TransaksiBarangEdit />} />
-        <Route
-          path="/gudang/dashboard/supplier/add-supplier"
-          element={<AddSupplier />}
-        />
+
         <Route
           path="/transaksi-barang/create"
           element={<TransaksiBarangAdd />}
@@ -141,29 +147,7 @@ const App = () => {
           path="/gudang/detail-transaksi-barang/dashboard"
           element={<DetailTransaksiBarangDashboard />}
         />
-        <Route path="/edit-supplier/:id" element={<EditSupplier />} />
-        <Route path="/show-supplier/:id" element={<ShowSupplier />} />
-        <Route path="/gudang/rak/dashboard" element={<RakSupplier />} />
-        <Route path="/gudang/rak/add-rak" element={<AddRak />} />
-        {/* Routing untuk halaman detail rak */}
-        <Route path="/show-rak/:id_rak" element={<ShowRak />} />
-        <Route path="/gudang/rak/edit-rak/:id_rak" element={<EditRak />} />
-        <Route
-          path="/gudang/kategori-barang/dashboard"
-          element={<KategoriBarangDashboard />}
-        />
-        <Route
-          path="/gudang/kategori-barang/edit/:id_kategori"
-          element={<KategoriBarangEdit />}
-        />
-        <Route
-          path="/gudang/kategori-barang/add"
-          element={<KategoriBarangAdd />}
-        />
-        <Route
-          path="/gudang/kategori-barang/show/:id"
-          element={<KategoriBarangShow />}
-        />
+
         <Route
           path="/gudang/jenis-barang/dashboard"
           element={<JenisBarangDashboard />}
@@ -208,6 +192,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        {/* Untuk Bagian Role Gudang */}
         <Route
           path="/gudang/dashboard"
           element={
@@ -216,25 +201,38 @@ const App = () => {
             </PrivateRoute>
           }
         />
-
-        {/* Supplier Dashboard Route */}
+        {/* Bagian Supplier */}
         <Route
           path="/gudang/supplier/dashboard"
-          element={
-            <PrivateRoute role="gudang">
-              <SupplierDashboard />
-            </PrivateRoute>
-          }
+          element={<DashboardSupplier />}
+        />
+        <Route path="/gudang/supplier/create" element={<CreateSupplier />} />
+        <Route path="/gudang/supplier/edit/:id" element={<EditSupplier />} />
+        <Route path="/gudang/supplier/view/:id" element={<ViewSupplier />} />
+        {/* Bagian Rak */}
+        <Route path="/gudang/rack/dashboard" element={<DashboardRack />} />
+        <Route path="/gudang/rack/create" element={<CreateRack />} />
+        <Route path="/gudang/rack/view/:id_rak" element={<ViewRack />} />
+        <Route path="/gudang/rack/edit/:id_rak" element={<EditRack />} />
+        {/* Bagian Kategori Barang */}
+        <Route
+          path="/gudang/product-categories/dashboard"
+          element={<DashboardProductCategories />}
+        />
+        <Route
+          path="/gudang/product-categories/edit/:id_kategori"
+          element={<EditProductCategories />}
+        />
+        <Route
+          path="/gudang/product-categories/create"
+          element={<CreateProductCategories />}
+        />
+        <Route
+          path="/gudang/product-categories/view/:id_kategori"
+          element={<ViewProductCategories />}
         />
 
-        <Route
-          path="/gudang/supplier/add"
-          element={
-            <PrivateRoute role="gudang">
-              <AddSupplier />
-            </PrivateRoute>
-          }
-        />
+        {/* Supplier Dashboard Route */}
 
         {/* Redirect jika rute tidak valid */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}

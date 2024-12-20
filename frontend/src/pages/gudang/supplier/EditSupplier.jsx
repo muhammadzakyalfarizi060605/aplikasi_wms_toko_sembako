@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const EditSupplier = () => {
   const { id } = useParams(); // Ambil id dari URL
@@ -34,12 +35,24 @@ const EditSupplier = () => {
         supplier
       );
       console.log("Response:", response); // Lihat respons server
+      Swal.fire({
+        title: "Success!",
+        text: "Supplier updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
       navigate("/gudang/supplier/dashboard"); // Setelah edit berhasil, redirect ke Dashboard
     } catch (error) {
       console.error(
         "Error updating supplier:",
         error.response ? error.response.data : error.message
       );
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error updating the supplier.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

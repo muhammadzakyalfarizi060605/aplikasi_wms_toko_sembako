@@ -21,7 +21,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
           </h1>
         </div>
         <ul className="mt-4 space-y-4 flex-1">
-          {/* Home Menu */}
+          {/* Dashboard Menu */}
           <li>
             <Link
               to="/gudang/dashboard"
@@ -33,11 +33,11 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
               onClick={() => handleClick(0)} // Menandakan item yang diklik
             >
               <span className="text-lg">🏠</span>
-              {!isCollapsed && <span className="ml-6">Home</span>}
+              {!isCollapsed && <span className="ml-6">Dashboard</span>}
             </Link>
           </li>
 
-          {/* Supplier Menu */}
+          {/* Supplier Management Menu */}
           <li>
             <Link
               to="/gudang/supplier/dashboard"
@@ -53,10 +53,10 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
             </Link>
           </li>
 
-          {/* Rak Menu */}
+          {/* Rack Management Menu */}
           <li>
             <Link
-              to="/gudang/rak/dashboard"
+              to="/gudang/rack/dashboard"
               className={`flex items-center font-extrabold ml-2 p-3 rounded-tl-xl rounded-bl-xl ${
                 clicked === 2
                   ? "bg-white text-black"
@@ -65,16 +65,16 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
               onClick={() => handleClick(2)} // Menandakan item yang diklik
             >
               <span className="text-lg">🗂️</span>
-              {!isCollapsed && <span className="ml-6">Rak</span>}
+              {!isCollapsed && <span className="ml-6">Rack</span>}
             </Link>
           </li>
 
-          {/* Dropdown Barang */}
+          {/* Product Management Dropdown */}
           <li>
             <details className="group">
               <summary className="flex items-center font-extrabold ml-2 cursor-pointer hover:bg-white hover:text-black p-3 rounded-tl-xl rounded-bl-xl">
                 <span className="text-lg">📦</span>
-                {!isCollapsed && <span className="ml-6">Barang</span>}
+                {!isCollapsed && <span className="ml-6">Products</span>}
               </summary>
               <ul className="ml-6 mt-2 space-y-2">
                 <li>
@@ -82,16 +82,18 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                     to="/gudang/jenis-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
-                    {!isCollapsed && <span className="ml-6">Jenis Barang</span>}
+                    {!isCollapsed && (
+                      <span className="ml-6">Product Types</span>
+                    )}
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/gudang/kategori-barang/dashboard"
+                    to="/gudang/product-categories/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (
-                      <span className="ml-6">Kategori Barang</span>
+                      <span className="ml-6">Product Categories</span>
                     )}
                   </Link>
                 </li>
@@ -99,12 +101,12 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
             </details>
           </li>
 
-          {/* Dropdown Transaksi Barang */}
+          {/* Transaction Management Dropdown */}
           <li>
             <details className="group">
               <summary className="flex items-center font-extrabold ml-2 cursor-pointer hover:bg-white hover:text-black p-3 rounded-tl-xl rounded-bl-xl">
                 <span className="text-lg">🔄</span>
-                {!isCollapsed && <span className="ml-6">Transaksi Barang</span>}
+                {!isCollapsed && <span className="ml-6">Transactions</span>}
               </summary>
               <ul className="ml-6 mt-2 space-y-2">
                 <li>
@@ -112,9 +114,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                     to="/gudang/transaksi-barang/dashboard"
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
-                    {!isCollapsed && (
-                      <span className="ml-6">Transaksi Barang</span>
-                    )}
+                    {!isCollapsed && <span className="ml-6">Transactions</span>}
                   </Link>
                 </li>
                 <li>
@@ -123,7 +123,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
                     className="flex items-center font-bold hover:bg-white hover:text-black p-2 rounded-md"
                   >
                     {!isCollapsed && (
-                      <span className="ml-6">Detail Transaksi</span>
+                      <span className="ml-6">Transaction Details</span>
                     )}
                   </Link>
                 </li>
@@ -131,7 +131,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
             </details>
           </li>
 
-          {/* Laporan Stok Menu */}
+          {/* Stock Report Menu */}
           <li>
             <Link
               to="/laporan_stok/dashboard"
@@ -143,7 +143,7 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
               onClick={() => handleClick(3)} // Menandakan item yang diklik
             >
               <span className="text-lg">📊</span>
-              {!isCollapsed && <span className="ml-6">Laporan Stok</span>}
+              {!isCollapsed && <span className="ml-6">Stock Report</span>}
             </Link>
           </li>
         </ul>

@@ -3,6 +3,7 @@ import Navbar from "../../layouts/Navbar";
 import Sidebar from "../../layouts/Sidebar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -19,14 +20,31 @@ const Dashboard = () => {
   }, []);
 
   const handleDelete = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus kategori ini?")) {
-      axios
-        .delete(`http://localhost:8000/api/kategori-barang/${id}`)
-        .then((res) => {
-          setKategori(kategori.filter((k) => k.id_kategori !== id));
-        })
-        .catch((err) => console.error(err));
-    }
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Kategori barang ini akan dihapus!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:8000/api/kategori-barang/${id}`)
+          .then((res) => {
+            setKategori(kategori.filter((k) => k.id_kategori !== id));
+            Swal.fire("Terhapus!", "Kategori barang telah dihapus.", "success");
+          })
+          .catch((err) => {
+            console.error(err);
+            Swal.fire(
+              "Gagal!",
+              "Terjadi kesalahan saat menghapus kategori.",
+              "error"
+            );
+          });
+      }
+    });
   };
 
   return (
@@ -58,7 +76,7 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold mb-4">Data Kategori Barang</h1>
             <div className="overflow-x-auto">
               <Link
-                to="/gudang/kategori-barang/add"
+                to="/gudang/product-categories/create"
                 className="bg-blue-500 text-white p-2 rounded"
               >
                 Tambah Kategori
@@ -80,13 +98,13 @@ const Dashboard = () => {
                       <td className="border px-4 py-2">{kategori.deskripsi}</td>
                       <td className="border px-4 py-2">
                         <Link
-                          to={`/gudang/kategori-barang/edit/${kategori.id_kategori}`}
+                          to={`/gudang/product-categories/edit/${kategori.id_kategori}`}
                           className="bg-yellow-500 text-white p-2 rounded"
                         >
                           Edit
                         </Link>
                         <Link
-                          to={`/gudang/kategori-barang/show/${kategori.id_kategori}`}
+                          to={`/gudang/product-categories/view/${kategori.id_kategori}`}
                           className="bg-green-500 text-white p-2 ml-2 rounded"
                         >
                           Show

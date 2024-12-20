@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "../../layouts/Navbar";
 import Sidebar from "../../layouts/Sidebar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const KategoriBarangAdd = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -19,9 +20,27 @@ const KategoriBarangAdd = () => {
         deskripsi,
       })
       .then((res) => {
-        navigate("/gudang/kategori-barang/dashboard"); // Navigasi ke halaman utama setelah berhasil menambah kategori
+        // Menampilkan SweetAlert sukses
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Kategori barang berhasil ditambahkan.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/gudang/product-categories/dashboard"); // Navigasi ke halaman utama setelah berhasil menambah kategori
+        });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+
+        // Menampilkan SweetAlert error jika ada kesalahan
+        Swal.fire({
+          title: "Terjadi Kesalahan!",
+          text: "Gagal menambahkan kategori barang.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      });
   };
 
   return (
@@ -48,7 +67,7 @@ const KategoriBarangAdd = () => {
             <p className="text-gray-600">Kelola kategori barang disini.</p>
           </div>
 
-          {/* Tabel Rak */}
+          {/* Form untuk menambah kategori barang */}
           <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">
               Tambah Data Kategori Barang

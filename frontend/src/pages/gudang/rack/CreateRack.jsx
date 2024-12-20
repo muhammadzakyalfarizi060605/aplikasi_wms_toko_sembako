@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AddRak = () => {
   const [kodeRak, setKodeRak] = useState("");
@@ -16,9 +17,23 @@ const AddRak = () => {
         nama_rak: namaRak,
         lokasi_rak: lokasiRak,
       });
-      navigate("/gudang/rak/dashboard"); // Redirect to dashboard after success
+      // Success alert
+      Swal.fire({
+        title: "Success!",
+        text: "Rak added successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      navigate("/gudang/rack/dashboard"); // Redirect to dashboard after success
     } catch (error) {
       console.error("Error adding rak:", error);
+      // Error alert
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error adding the rak.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

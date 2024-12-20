@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const TambahBarang = () => {
   const [kategoriList, setKategoriList] = useState([]); // Untuk menyimpan data kategori
   const [namaBarang, setNamaBarang] = useState("");
   const [idKategori, setIdKategori] = useState("");
-  const [jumlahStok, setJumlahStok] = useState("");
+  const [jumlahStok, setJumlahStok] = useState(0); // Set default to 0
   const [satuan, setSatuan] = useState("");
   const [hargaJual, setHargaJual] = useState("");
   const [gambarBarang, setGambarBarang] = useState(null);
@@ -43,12 +44,22 @@ const TambahBarang = () => {
         },
       })
       .then((response) => {
-        alert("Barang berhasil ditambahkan!");
+        Swal.fire({
+          title: "Sukses!",
+          text: "Barang berhasil ditambahkan.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
         navigate("/gudang/jenis-barang/dashboard"); // Redirect ke dashboard setelah sukses
       })
       .catch((error) => {
         console.error("Error adding barang:", error);
-        alert("Gagal menambahkan barang. Silakan coba lagi.");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal menambahkan barang. Silakan coba lagi.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
@@ -96,7 +107,7 @@ const TambahBarang = () => {
               className="w-full border px-4 py-2 rounded"
               value={jumlahStok}
               onChange={(e) => setJumlahStok(e.target.value)}
-              required
+              readOnly // Make it readonly
             />
           </div>
 

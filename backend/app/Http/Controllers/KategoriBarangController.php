@@ -28,10 +28,21 @@ class KategoriBarangController extends Controller
     }
 
     // Menampilkan kategori berdasarkan ID
-    public function show($id)
+    public function show($id_kategori)
     {
-        return response()->json(KategoriBarangModel::find($id));
+        // Mencari kategori berdasarkan ID
+        $kategori = KategoriBarangModel::find($id_kategori);
+
+        // Memeriksa apakah kategori ditemukan
+        if ($kategori) {
+            // Mengembalikan data kategori dalam format JSON
+            return response()->json($kategori);
+        } else {
+            // Jika kategori tidak ditemukan, mengembalikan response error
+            return response()->json(['message' => 'Kategori tidak ditemukan'], 404);
+        }
     }
+
 
     // Mengupdate kategori
     public function update(Request $request, $id)

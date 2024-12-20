@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const EditKategori = () => {
   const navigate = useNavigate(); // Untuk navigasi
@@ -37,10 +38,27 @@ const EditKategori = () => {
     axios
       .put(`http://localhost:8000/api/kategori-barang/${id}`, kategori)
       .then(() => {
-        // Setelah berhasil, arahkan kembali ke halaman dashboard
-        navigate("/gudang/kategori-barang/dashboard");
+        // Menampilkan SweetAlert setelah berhasil update
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Kategori berhasil diperbarui.",
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then(() => {
+          // Setelah berhasil, arahkan kembali ke halaman dashboard
+          navigate("/gudang/product-categories/dashboard");
+        });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        // Menampilkan SweetAlert jika terjadi error
+        Swal.fire({
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat memperbarui kategori.",
+          icon: "error",
+          confirmButtonText: "Coba Lagi",
+        });
+        console.error(err);
+      });
   };
 
   return (

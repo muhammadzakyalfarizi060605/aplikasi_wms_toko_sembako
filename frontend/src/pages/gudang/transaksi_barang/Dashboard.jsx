@@ -3,6 +3,7 @@ import Sidebar from "../layouts/Sidebar";
 import Navbar from "../layouts/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -31,21 +32,43 @@ const Dashboard = () => {
     navigate(`/edit-transaksi/${id}`);
   };
 
-  // Delete transaction
+  // Delete transaction with SweetAlert confirmation
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this transaction?")) {
-      axios
-        .delete(`http://localhost:8000/api/transaksi-barang/${id}`)
-        .then((response) => {
-          alert("Transaction deleted successfully.");
-          setTransaksiBarang(
-            transaksiBarang.filter((item) => item.id_transaksi !== id)
-          );
-        })
-        .catch((error) => {
-          console.error("There was an error deleting the transaction!", error);
-        });
-    }
+    Swal.fire({
+      title: "Apakah anda yakin ?",
+      text: "Ingin menghapus data ini !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:8000/api/transaksi-barang/${id}`)
+          .then((response) => {
+            Swal.fire(
+              "Deleted!",
+              "Your transaction has been deleted.",
+              "success"
+            );
+            setTransaksiBarang(
+              transaksiBarang.filter((item) => item.id_transaksi !== id)
+            );
+          })
+          .catch((error) => {
+            console.error(
+              "There was an error deleting the transaction!",
+              error
+            );
+            Swal.fire(
+              "Error!",
+              "There was an error deleting the transaction.",
+              "error"
+            );
+          });
+      }
+    });
   };
 
   // Navigate to the Add Transaction page

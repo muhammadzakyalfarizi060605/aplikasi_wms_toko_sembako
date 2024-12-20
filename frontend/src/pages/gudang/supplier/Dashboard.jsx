@@ -3,6 +3,7 @@ import Sidebar from "../layouts/Sidebar";
 import Navbar from "../layouts/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import Swal
 
 const DashboardSupplier = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -24,15 +25,30 @@ const DashboardSupplier = () => {
 
   // Handle delete supplier
   const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus supplier ini?")) {
+    // Replace confirm with Swal
+    const result = await Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data supplier ini akan dihapus!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`http://127.0.0.1:8000/api/suppliers/${id}`);
-        alert("Supplier berhasil dihapus!");
+        Swal.fire("Dihapus!", "Supplier berhasil dihapus!", "success");
         setSuppliers(
           suppliers.filter((supplier) => supplier.id_supplier !== id)
         ); // Update state after deletion
       } catch (error) {
         console.error("Error deleting supplier:", error);
+        Swal.fire(
+          "Gagal!",
+          "Terjadi kesalahan saat menghapus supplier.",
+          "error"
+        );
       }
     }
   };
@@ -59,6 +75,16 @@ const DashboardSupplier = () => {
               Dashboard Supplier
             </h1>
             <p className="text-gray-600">Kelola data supplier di sini.</p>
+          </div>
+
+          {/* Add Supplier Button */}
+          <div className="mb-4 flex justify-end">
+            <button
+              onClick={() => navigate("/gudang/supplier/create")}
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+            >
+              Create Supplier
+            </button>
           </div>
 
           {/* Supplier Table */}
@@ -108,7 +134,7 @@ const DashboardSupplier = () => {
                           <button
                             onClick={() =>
                               navigate(
-                                `/gudang/supplier/show/${supplier.id_supplier}`
+                                `/gudang/supplier/view/${supplier.id_supplier}`
                               )
                             }
                             className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 mr-2"
